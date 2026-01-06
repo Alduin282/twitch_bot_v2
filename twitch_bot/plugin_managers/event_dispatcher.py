@@ -1,3 +1,5 @@
+import asyncio
+import inspect
 from typing import Sequence
 from venv import logger
 from twitch_bot.definitions import EventHandler, EventType
@@ -15,13 +17,40 @@ class EventDispatcher(IEventDispatcher):
             for event_type, event_handler in plugin_handlers.items():
                 self._event_handlers.setdefault(event_type, []).append(event_handler)
 
-    async def dispatch(self, event: EventType, *args) -> None:
-        for event_handler in self._event_handlers.get(event, []):
-            try:
-                await event_handler(*args)
-            except Exception:
-                logger.exception(f"Handler failed: {event_handler}")
+    async def dispatch(self, event_type: EventType, *args) -> None:
+        event_handlers = self._event_handlers.get(event_type, [])
 
+        if not event_handlers:
+            return
 
-# 1. не паралельно работают плагины
-# 2. логируется какая то хуйня , нужна норм информация
+        handler_calls = [
+            self._safe_call(event_type, handler, *args) for handler in event_handlers
+        ]
+
+        await asyncio.gather(*handler_calls, return_exceptions=True)
+
+    async def _safe_call(
+        self,
+        event_type: EventType,
+        event_handler: EventHandler,
+        *args,
+    ) -> None:
+        try:
+            await event_handler(*args)
+        except Exception:
+            logger.exception(
+                "Event handler failed",
+                extra={
+                    "event": event_type.value,
+                    "plugin": self._get_plugin_name(event_handler),
+                },
+            )
+
+    def _get_plugin_name(
+        self,
+        event_handler: EventHandler,
+    ):
+        if inspect.ismethod(event_handler):
+            return event_handler.__self__.__class__.__name__
+        else:
+            return "No plugin found"
