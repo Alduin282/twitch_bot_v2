@@ -1,10 +1,11 @@
 from typing import Callable, Sequence
 from venv import logger
 from twitch_bot.definitions import EventType
+from twitch_bot.plugin_managers.interface_event_dispatcher import IEventDispatcher
 from twitch_bot.plugins.bot_plugin import BotPlugin
 
 
-class EventDispatcher:
+class EventDispatcher(IEventDispatcher):
     def __init__(self, bot_plugins: Sequence[BotPlugin]) -> None:
         self._event_handlers: dict[EventType, list[Callable]] = {}
 
@@ -24,4 +25,3 @@ class EventDispatcher:
 
 # 1. не паралельно работают плагины
 # 2. логируется какая то хуйня , нужна норм информация
-# 3. не хватает интерфейса

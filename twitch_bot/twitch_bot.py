@@ -1,6 +1,6 @@
 from twitchio.ext import commands
 from twitch_bot.definitions import EventType
-from twitch_bot.plugin_managers.event_dispatcher import EventDispatcher
+from twitch_bot.plugin_managers.interface_event_dispatcher import IEventDispatcher
 
 
 class TwitchBot(commands.Bot):
@@ -9,7 +9,7 @@ class TwitchBot(commands.Bot):
         token: str,
         channels_to_connect: list[str],
         twitch_secret_key: str,
-        event_dispatcher: EventDispatcher,
+        event_dispatcher: IEventDispatcher,
     ):
         super().__init__(
             token=token,
