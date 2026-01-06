@@ -7,4 +7,4 @@ class EventType(Enum):
     MESSAGE = "message"
 
 
-EventHandler = Callable[..., Awaitable[None]]
+EVENT_HANDLER = Callable[..., Awaitable[None]]

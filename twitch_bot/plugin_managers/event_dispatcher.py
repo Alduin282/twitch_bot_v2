@@ -2,7 +2,7 @@ import asyncio
 import inspect
 import logging
 from typing import Sequence
-from twitch_bot.definitions import EventHandler, EventType
+from twitch_bot.definitions import EVENT_HANDLER, EventType
 from twitch_bot.plugin_managers.interface_event_dispatcher import IEventDispatcher
 from twitch_bot.plugins.bot_plugin import BotPlugin
 
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class EventDispatcher(IEventDispatcher):
     def __init__(self, bot_plugins: Sequence[BotPlugin]) -> None:
-        self._event_handlers: dict[EventType, list[EventHandler]] = {}
+        self._event_handlers: dict[EventType, list[EVENT_HANDLER]] = {}
 
         for plugin in bot_plugins:
             plugin_handlers = plugin.get_event_handlers()
@@ -35,7 +35,7 @@ class EventDispatcher(IEventDispatcher):
     async def _safe_call(
         self,
         event_type: EventType,
-        event_handler: EventHandler,
+        event_handler: EVENT_HANDLER,
         *args,
     ) -> None:
         try:
@@ -51,7 +51,7 @@ class EventDispatcher(IEventDispatcher):
 
     def _get_plugin_name(
         self,
-        event_handler: EventHandler,
+        event_handler: EVENT_HANDLER,
     ):
         if inspect.ismethod(event_handler):
             return event_handler.__self__.__class__.__name__
