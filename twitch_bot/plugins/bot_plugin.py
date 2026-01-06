@@ -1,16 +1,9 @@
-from abc import ABC
-from twitchio import Message
+from abc import ABC, abstractmethod
+from typing import Callable
 
-from twitch_bot.twitch_bot import TwitchBot
+from twitch_bot.definitions import EventType
 
 
 class BotPlugin(ABC):
-
-    async def on_ready(self, bot: TwitchBot) -> None:
-        pass
-
-    async def on_message(self, bot: TwitchBot, message: Message) -> None:
-        pass
-
-    async def on_raw(self, bot: TwitchBot, raw_data: str) -> None:
-        pass
+    @abstractmethod
+    def get_event_handlers(self) -> dict[EventType, Callable]: ...

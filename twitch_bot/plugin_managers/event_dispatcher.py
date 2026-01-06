@@ -1,0 +1,27 @@
+from typing import Callable, Sequence
+from venv import logger
+from twitch_bot.definitions import EventType
+from twitch_bot.plugins.bot_plugin import BotPlugin
+
+
+class EventDispatcher:
+    def __init__(self, bot_plugins: Sequence[BotPlugin]) -> None:
+        self._event_handlers: dict[EventType, list[Callable]] = {}
+
+        for plugin in bot_plugins:
+            plugin_handlers = plugin.get_event_handlers()
+
+            for event_type, event_handler in plugin_handlers.items():
+                self._event_handlers.setdefault(event_type, []).append(event_handler)
+
+    async def dispatch(self, event: EventType, *args) -> None:
+        for event_handler in self._event_handlers.get(event, []):
+            try:
+                await event_handler(*args)
+            except Exception:
+                logger.exception(f"Handler failed: {event_handler}")
+
+
+# 1. не паралельно работают плагины
+# 2. логируется какая то хуйня , нужна норм информация
+# 3. не хватает интерфейса
