@@ -1,11 +1,17 @@
 import os
+import logging
 
 from dotenv import load_dotenv
 from twitch_bot.plugin_managers.event_dispatcher import EventDispatcher
-from twitch_bot.plugins.empty_plugin import EmptyBotPlugin
+from twitch_bot.plugins.log_start_bot_plugin import LogStartBotPlugin
 from twitch_bot.twitch_bot import TwitchBot
 
 load_dotenv()
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+)
 
 TWITCH_TOKEN_AOTH = os.getenv("TWITCH_TOKEN_AOTH_ALDUIN")
 if TWITCH_TOKEN_AOTH is None:
@@ -16,8 +22,9 @@ if TWITCH_SECRET_KEY is None:
     raise RuntimeError("Twitch secret key is not found")
 
 plugins = [
-    EmptyBotPlugin(),
+    LogStartBotPlugin(),
 ]
+
 
 event_dispatcher = EventDispatcher(plugins)
 

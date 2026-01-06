@@ -1,10 +1,13 @@
 import asyncio
 import inspect
+import logging
 from typing import Sequence
-from venv import logger
 from twitch_bot.definitions import EventHandler, EventType
 from twitch_bot.plugin_managers.interface_event_dispatcher import IEventDispatcher
 from twitch_bot.plugins.bot_plugin import BotPlugin
+
+
+logger = logging.getLogger(__name__)
 
 
 class EventDispatcher(IEventDispatcher):

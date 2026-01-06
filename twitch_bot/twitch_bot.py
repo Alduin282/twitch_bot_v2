@@ -20,7 +20,6 @@ class TwitchBot(commands.Bot):
         self.event_dispatcher = event_dispatcher
 
     async def event_ready(self):
-        print(f"[Bot] Logged in as {self.nick}")  # это бы отсюда убрать
         await self.event_dispatcher.dispatch(EventType.READY, self)
 
     async def event_message(self, message):
