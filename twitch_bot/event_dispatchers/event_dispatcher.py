@@ -3,7 +3,7 @@ import inspect
 import logging
 from typing import Sequence
 from twitch_bot.definitions import EVENT_HANDLER, EventType
-from twitch_bot.plugin_managers.interface_event_dispatcher import IEventDispatcher
+from twitch_bot.event_dispatchers.interface_event_dispatcher import IEventDispatcher
 from twitch_bot.plugins.bot_plugin import BotPlugin
 
 

@@ -2,7 +2,7 @@ import os
 import logging
 
 from dotenv import load_dotenv
-from twitch_bot.plugin_managers.event_dispatcher import EventDispatcher
+from twitch_bot.event_dispatchers.event_dispatcher import EventDispatcher
 from twitch_bot.plugins.console_chat_bot_plugin import ConsoleChatBotPlugin
 from twitch_bot.plugins.log_start_bot_plugin import LogStartBotPlugin
 from twitch_bot.plugins.pyramid_bot_plugin import PyramidBotPlugin

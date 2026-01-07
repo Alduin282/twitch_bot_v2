@@ -1,7 +1,7 @@
 from twitchio.ext import commands
 from twitchio import Message
 from twitch_bot.definitions import EventType
-from twitch_bot.plugin_managers.interface_event_dispatcher import IEventDispatcher
+from twitch_bot.event_dispatchers.interface_event_dispatcher import IEventDispatcher
 
 
 class TwitchBot(commands.Bot):
