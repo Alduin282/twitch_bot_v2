@@ -14,5 +14,8 @@ class LogStartBotPlugin(BotPlugin):
         }
 
     async def _on_ready(self, bot: TwitchBot) -> None:
+        connected_channels_names = [channel.name for channel in bot.connected_channels]
         logger.info(f"[LogStartBotPlugin] Logged in as {bot.nick}")
-        logger.info(f"[LogStartBotPlugin] User id is {bot.user_id}")
+        logger.info(
+            f"[LogStartBotPlugin] Connected channels is {connected_channels_names}"
+        )
