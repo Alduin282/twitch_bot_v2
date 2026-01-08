@@ -5,6 +5,7 @@ from twitchio import Message
 
 
 class PyramidBotPlugin(BotPlugin):
+    # TODO дать возможность задавать смайл пирамиды, если нет юзаем дефолтный
     COMMAND_NAME = "pyramid"
     NO_PYRAMID_HEIGHT_MESSAGE = ""
     PYRAMID_HEIGHT_IS_NOT_NUMBER_MESSAGE = "высота пирамиды не задана"
@@ -24,16 +25,16 @@ class PyramidBotPlugin(BotPlugin):
         if not text_of_command.startswith(self.COMMAND_NAME):
             return
 
-        context_of_command = await bot.get_context(message)
+        channel = message.channel
 
         ok, problem_message = self._validate_pyramid_command(text_of_command)
         if not ok:
-            await context_of_command.send(f"@{message.author.name} {problem_message}")
+            await channel.send(f"@{message.author.name} {problem_message}")
             return
 
         pyramid_height = self._get_pyramid_height(text_of_command)
         for pyramid_line in self._build_pyramid(pyramid_height):
-            await context_of_command.send(pyramid_line)
+            await channel.send(pyramid_line)
 
     def _validate_pyramid_command(self, text_of_command: str) -> tuple[bool, str]:
         parts_of_command = text_of_command.split()
