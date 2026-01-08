@@ -61,7 +61,6 @@ class LaughReactionBotPlugin(BotPlugin):
 
     async def _on_message(self, bot: TwitchBot, message: Message) -> None:
         channel_name = message.channel.name
-
         cooldown = self._get_channel_cooldown(channel_name)
         if not cooldown.is_ready():
             return
