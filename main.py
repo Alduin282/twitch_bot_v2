@@ -3,7 +3,7 @@ import logging
 
 from dotenv import load_dotenv
 from twitch_bot.event_dispatchers.event_dispatcher import EventDispatcher
-from twitch_bot.plugins.console_chat_bot_plugin import ConsoleChatBotPlugin
+from twitch_bot.plugins.laugh_reaction_bot_plugin import LaughReactionBotPlugin
 from twitch_bot.plugins.log_start_bot_plugin import LogStartBotPlugin
 from twitch_bot.plugins.pyramid_bot_plugin import PyramidBotPlugin
 from twitch_bot.twitch_bot import TwitchBot
@@ -26,7 +26,8 @@ if TWITCH_SECRET_KEY is None:
 plugins = [
     LogStartBotPlugin(),
     PyramidBotPlugin(),
-    ConsoleChatBotPlugin(),
+    # ConsoleChatBotPlugin(),
+    LaughReactionBotPlugin(),
 ]
 
 

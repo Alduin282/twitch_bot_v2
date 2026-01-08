@@ -1,9 +1,11 @@
 import asyncio
+import logging
+
 from twitch_bot.definitions import EVENT_HANDLER, EventType
 from twitch_bot.twitch_bot import TwitchBot
 from twitch_bot.plugins.bot_plugin import BotPlugin
 from twitchio import Channel
-import logging
+
 
 logger = logging.getLogger(__name__)
 
