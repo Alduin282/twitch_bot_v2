@@ -12,7 +12,19 @@ logger = logging.getLogger(__name__)
 
 
 class LaughReactionBotPlugin(BotPlugin):
-    LAUGH_TRIGGERS = ("LUL", "))", "LOL", "LO", "ахах", "пхпх", "ахпх", "f[f[", "хаха")
+    LAUGH_TRIGGERS = (
+        "LUL",
+        "))",
+        "LOL",
+        "LO",
+        "ахах",
+        "пхпх",
+        "ахпх",
+        "f[f[",
+        "хаха",
+        "АХАХ",
+        "ХАХА",
+    )
     LAUGH_REPLIES = (
         "ахаххаха",
         "f[f[[f[f[f[[f",
@@ -48,12 +60,9 @@ class LaughReactionBotPlugin(BotPlugin):
         }
 
     async def _on_message(self, bot: TwitchBot, message: Message) -> None:
-        # 1. TODO выделитьв отдельную функу и сделать через сейф дефаулт
         channel_name = message.channel.name
-        if channel_name not in self.cooldowns:
-            self.cooldowns[channel_name] = Cooldown(self.cooldown_seconds)
 
-        cooldown = self.cooldowns[channel_name]
+        cooldown = self._get_channel_cooldown(channel_name)
         if not cooldown.is_ready():
             return
 
@@ -63,11 +72,11 @@ class LaughReactionBotPlugin(BotPlugin):
         ):
             return
 
-        context_of_message = await bot.get_context(message)
-        # чуть ждем, чтобы ответ не был слижком резким
+        # чуть ждем, чтобы ответ не был слишком резким
         await asyncio.sleep(random.uniform(0.3, 1.0))
-        await context_of_message.send(random.choice(self.LAUGH_REPLIES))
+        await message.channel.send(random.choice(self.LAUGH_REPLIES))
 
         cooldown.trigger()
 
-        # 2. TODO может стоит везде где не нужен конетекст работать через message.channel.send?
+    def _get_channel_cooldown(self, channel_name: str) -> Cooldown:
+        return self.cooldowns.setdefault(channel_name, Cooldown(self.cooldown_seconds))
