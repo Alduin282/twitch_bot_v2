@@ -3,8 +3,10 @@ import logging
 
 from dotenv import load_dotenv
 from twitch_bot.event_dispatchers.event_dispatcher import EventDispatcher
+from twitch_bot.plugins.helpers import DurationRange
 from twitch_bot.plugins.laugh_reaction_bot_plugin import LaughReactionBotPlugin
 from twitch_bot.plugins.log_start_bot_plugin import LogStartBotPlugin
+from twitch_bot.plugins.periodic_spam_bot_plugin import PeriodicSpamBotPlugin
 from twitch_bot.plugins.pyramid_bot_plugin import PyramidBotPlugin
 from twitch_bot.twitch_bot import TwitchBot
 
@@ -28,6 +30,7 @@ plugins = [
     PyramidBotPlugin(),
     # ConsoleChatBotPlugin(),
     LaughReactionBotPlugin(),
+    PeriodicSpamBotPlugin(["спам", "не спам"], interval=DurationRange(5, 6)),
 ]
 
 
