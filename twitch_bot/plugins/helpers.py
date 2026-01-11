@@ -16,8 +16,8 @@ class Cooldown:
         self._last_trigger_time = time.time()
 
 
-@dataclass
-class Delay:
+@dataclass(frozen=True)
+class DurationRange:
     min_seconds: float = 0.0
     max_seconds: float = 0.0
 
@@ -29,8 +29,8 @@ class Delay:
                 f"is invalid: min_seconds cannot be greater than max_seconds"
             )
 
-    def should_delay(self) -> bool:
+    def should_sleep(self) -> bool:
         return self.max_seconds > 0
 
-    async def wait(self) -> None:
+    async def sleep_in_range(self) -> None:
         await asyncio.sleep(random.uniform(self.min_seconds, self.max_seconds))
