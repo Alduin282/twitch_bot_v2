@@ -3,7 +3,7 @@ import logging
 import random
 from typing import Sequence
 from twitch_bot.definitions import EVENT_HANDLER, EventType
-from twitch_bot.plugins.helpers import DurationRange
+from twitch_bot.plugins.helpers import DurationRange, sleep_in_range
 from twitch_bot.twitch_bot import TwitchBot
 from twitch_bot.plugins.bot_plugin import BotPlugin
 
@@ -45,7 +45,7 @@ class PeriodicSpamBotPlugin(BotPlugin):
                 )
                 return
 
-            await self._interval.sleep_in_range()
+            await sleep_in_range(self._interval)
             message = random.choice(self._messages)
 
             for channel in channels:

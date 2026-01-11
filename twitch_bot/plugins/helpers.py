@@ -29,8 +29,11 @@ class DurationRange:
                 f"is invalid: min_seconds cannot be greater than max_seconds"
             )
 
-    def should_sleep(self) -> bool:
-        return self.max_seconds > 0
 
-    async def sleep_in_range(self) -> None:
-        await asyncio.sleep(random.uniform(self.min_seconds, self.max_seconds))
+async def sleep_in_range(duration_range: DurationRange) -> None:
+    if not duration_range.max_seconds > 0:
+        return
+
+    await asyncio.sleep(
+        random.uniform(duration_range.min_seconds, duration_range.max_seconds)
+    )
