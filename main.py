@@ -26,21 +26,13 @@ if TWITCH_SECRET_KEY is None:
 plugins = [
     LogStartBotPlugin(),
     ReactionPlugin(
-        reaction_rules=[
-            ReactionRule(
-                triggers=["FUCK"],
-                replies=["ТЫ ДОЛБАЕБ?", "ТИШЕ ТИШЕ"],
-                ignore_echo=False,
-                pre_reaction_delay=DurationRange(10, 10),
-                cooldown_seconds=20,
-            ),
-            ReactionRule(
-                triggers=["HEHE"],
-                replies=["LOL?"],
-                ignore_echo=False,
-                cooldown_seconds=0,
-            ),
-        ]
+        reaction_rule=ReactionRule(
+            triggers=["FUCK"],
+            replies=["ТЫ ДОЛБАЕБ?", "ТИШЕ ТИШЕ"],
+            ignore_echo=False,
+            pre_reaction_delay=DurationRange(10, 10),
+            cooldown_seconds=20,
+        )
     ),
 ]
 

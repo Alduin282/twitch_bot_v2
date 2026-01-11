@@ -1,4 +1,3 @@
-import asyncio
 import random
 
 from dataclasses import dataclass, field
@@ -40,25 +39,24 @@ class ReactionRule:
 
 
 class ReactionPlugin(BotPlugin):
-    def __init__(self, reaction_rules: list[ReactionRule]) -> None:
-        self.reaction_rules = reaction_rules
-        self._cooldowns: dict[tuple[str, str], Cooldown] = {}
+    def __init__(self, reaction_rule: ReactionRule) -> None:
+        self.reaction_rule = reaction_rule
+        self._cooldowns: dict[str, Cooldown] = {}
 
     def get_event_handlers(self) -> dict[EventType, EVENT_HANDLER]:
         return {EventType.MESSAGE: self._on_message}
 
     async def _on_message(self, bot: TwitchBot, message: Message) -> None:
-        for rule in self.reaction_rules:
-            if not self._should_react(rule, message):
-                continue
-
-            cooldown = self._get_cooldown(message.channel.name, rule)
-            if not cooldown.is_ready():
-                continue
-
-            asyncio.create_task(self._react_with_delay(message, rule))
-            cooldown.trigger()
+        if not self._should_react(self.reaction_rule, message):
             return
+
+        cooldown = self._get_channel_cooldown(message.channel.name)
+        if not cooldown.is_ready():
+            return
+
+        await self._react_with_delay(message, self.reaction_rule)
+        cooldown.trigger()
+        return
 
     @staticmethod
     def _should_react(reaction_rule: ReactionRule, message: Message) -> bool:
@@ -72,10 +70,12 @@ class ReactionPlugin(BotPlugin):
             return False
         return True
 
-    def _get_cooldown(self, channel_name: str, reaction_rule: ReactionRule) -> Cooldown:
-        key = (channel_name, reaction_rule._uid)
-        return self._cooldowns.setdefault(key, Cooldown(reaction_rule.cooldown_seconds))
+    def _get_channel_cooldown(self, channel_name: str) -> Cooldown:
+        return self._cooldowns.setdefault(
+            channel_name, Cooldown(self.reaction_rule.cooldown_seconds)
+        )
 
-    async def _react_with_delay(self, message: Message, reaction_rule: ReactionRule):
+    @staticmethod
+    async def _react_with_delay(message: Message, reaction_rule: ReactionRule):
         await sleep_in_range(reaction_rule.pre_reaction_delay)
         await message.channel.send(random.choice(reaction_rule.replies))

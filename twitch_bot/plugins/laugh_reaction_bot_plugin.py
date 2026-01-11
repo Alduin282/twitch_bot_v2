@@ -51,8 +51,8 @@ class LaughReactionBotPlugin(BotPlugin):
     )
 
     def __init__(self, cooldown_seconds: float = 10) -> None:
-        self.cooldown_seconds = cooldown_seconds
-        self.cooldowns: dict[str, Cooldown] = {}
+        self._cooldown_seconds = cooldown_seconds
+        self._cooldowns: dict[str, Cooldown] = {}
 
     def get_event_handlers(self) -> dict[EventType, EVENT_HANDLER]:
         return {
@@ -78,4 +78,6 @@ class LaughReactionBotPlugin(BotPlugin):
         cooldown.trigger()
 
     def _get_channel_cooldown(self, channel_name: str) -> Cooldown:
-        return self.cooldowns.setdefault(channel_name, Cooldown(self.cooldown_seconds))
+        return self._cooldowns.setdefault(
+            channel_name, Cooldown(self._cooldown_seconds)
+        )
