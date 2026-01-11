@@ -76,6 +76,6 @@ class ReactionPlugin(BotPlugin):
         )
 
     @staticmethod
-    async def _react_with_delay(message: Message, reaction_rule: ReactionRule):
+    async def _react_with_delay(message: Message, reaction_rule: ReactionRule) -> None:
         await sleep_in_range(reaction_rule.pre_reaction_delay)
         await message.channel.send(random.choice(reaction_rule.replies))
