@@ -3,9 +3,8 @@ import logging
 
 from dotenv import load_dotenv
 from twitch_bot.event_dispatchers.event_dispatcher import EventDispatcher
-from twitch_bot.plugins.helpers import Delay
+from twitch_bot.plugins.helpers import DurationRange
 from twitch_bot.plugins.log_start_bot_plugin import LogStartBotPlugin
-from twitch_bot.plugins.pyramid_bot_plugin import PyramidBotPlugin
 from twitch_bot.plugins.reaction_bot_plugin import ReactionPlugin, ReactionRule
 from twitch_bot.twitch_bot import TwitchBot
 
@@ -26,16 +25,13 @@ if TWITCH_SECRET_KEY is None:
 
 plugins = [
     LogStartBotPlugin(),
-    PyramidBotPlugin(),
-    # ConsoleChatBotPlugin(),
-    # LaughReactionBotPlugin(),
     ReactionPlugin(
         reaction_rules=[
             ReactionRule(
                 triggers=["FUCK"],
                 replies=["ТЫ ДОЛБАЕБ?", "ТИШЕ ТИШЕ"],
                 ignore_echo=False,
-                pre_reaction_delay=Delay(10, 10),
+                pre_reaction_delay=DurationRange(10, 10),
                 cooldown_seconds=20,
             ),
             ReactionRule(

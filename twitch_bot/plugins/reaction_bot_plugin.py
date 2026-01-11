@@ -6,7 +6,7 @@ from typing import Sequence
 from uuid import uuid4
 from twitch_bot.definitions import EVENT_HANDLER, EventType
 from twitch_bot.plugins.bot_plugin import BotPlugin
-from twitch_bot.plugins.helpers import Cooldown, Delay
+from twitch_bot.plugins.helpers import Cooldown, DurationRange, sleep_in_range
 from twitch_bot.twitch_bot import TwitchBot
 from twitchio import Message
 
@@ -18,7 +18,7 @@ class ReactionRule:
     reaction_probability: float = 1.0
     ignore_echo: bool = True
     cooldown_seconds: float = 10
-    pre_reaction_delay: Delay = field(default_factory=Delay)
+    pre_reaction_delay: DurationRange = field(default_factory=DurationRange)
     _uid: str = field(default_factory=lambda: str(uuid4()))
 
     def __post_init__(self):
@@ -77,6 +77,5 @@ class ReactionPlugin(BotPlugin):
         return self._cooldowns.setdefault(key, Cooldown(reaction_rule.cooldown_seconds))
 
     async def _react_with_delay(self, message: Message, reaction_rule: ReactionRule):
-        if reaction_rule.pre_reaction_delay.should_delay():
-            await reaction_rule.pre_reaction_delay.wait()
+        await sleep_in_range(reaction_rule.pre_reaction_delay)
         await message.channel.send(random.choice(reaction_rule.replies))
