@@ -37,14 +37,14 @@ class PeriodicSpamBotPlugin(BotPlugin):
         if self._delay_start_seconds > 0:
             await asyncio.sleep(self._delay_start_seconds)
 
-        channels = bot.connected_channels
-        if not channels:
-            logger.warning(
-                "[PeriodicSpamBotPlugin]: no connected channels, skipping spam"
-            )
-            return
-
         while True:
+            channels = bot.connected_channels
+            if not channels:
+                logger.warning(
+                    "[PeriodicSpamBotPlugin]: no connected channels, skipping spam"
+                )
+                return
+
             await self._interval.sleep_in_range()
             message = random.choice(self._messages)
 
