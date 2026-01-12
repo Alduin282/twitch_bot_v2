@@ -124,7 +124,8 @@ class LogLaughBurstBotPlugin(BotPlugin):
             f"{channel_name} LAUGH-BURST at {message_timestamp} ({stream_time})\n"
         )
         try:
-            await asyncio.to_thread(self._append_log, log_line)
+            async with self._file_lock:
+                await asyncio.to_thread(self._append_log, log_line)
             logger.info("[LogLaughBurstBotPlugin] laugh burst log successfully added")
         except Exception as e:
             logger.error(f"[LogLaughBurstBotPlugin] Failed to write laugh log: {e}")
