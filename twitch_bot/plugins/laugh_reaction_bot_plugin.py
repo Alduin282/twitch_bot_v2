@@ -74,7 +74,6 @@ class LaughReactionBotPlugin(BotPlugin):
         # чуть ждем, чтобы ответ не был слишком резким
         await asyncio.sleep(random.uniform(0.3, 1.0))
         await message.channel.send(random.choice(self.LAUGH_REPLIES))
-
         cooldown.trigger()
 
     def _get_channel_cooldown(self, channel_name: str) -> Cooldown:

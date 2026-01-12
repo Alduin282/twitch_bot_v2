@@ -3,6 +3,7 @@ import logging
 
 from dotenv import load_dotenv
 from twitch_bot.event_dispatchers.event_dispatcher import EventDispatcher
+from twitch_bot.plugins.laugh_reaction_bot_plugin import LaughReactionBotPlugin
 from twitch_bot.plugins.log_laugh_burst_bot_plugin import (
     LogLaughBurstBotPlugin,
 )
@@ -26,6 +27,7 @@ if TWITCH_SECRET_KEY is None:
 
 plugins = [
     LogStartBotPlugin(),
+    LaughReactionBotPlugin(30),
     LogLaughBurstBotPlugin(
         log_file="C:/twitch_logs/twitch_burst_log.txt",
         window_size_messages=1,
@@ -39,7 +41,7 @@ event_dispatcher = EventDispatcher(plugins)
 
 bot = TwitchBot(
     token=TWITCH_TOKEN_AOTH,
-    channels_to_connect=["praden"],
+    channels_to_connect=["melharucos", "C_a_k_e"],
     twitch_secret_key=TWITCH_SECRET_KEY,
     event_dispatcher=event_dispatcher,
 )
