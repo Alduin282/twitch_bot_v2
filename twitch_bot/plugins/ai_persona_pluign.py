@@ -2,7 +2,6 @@ from twitch_bot.ai.ai_ollama_service import AIOllamaService
 from twitch_bot.definitions import EVENT_HANDLER, EventType
 from twitch_bot.plugins.bot_plugin import BotPlugin
 from twitchio import Message
-
 from twitch_bot.twitch_bot import TwitchBot
 
 

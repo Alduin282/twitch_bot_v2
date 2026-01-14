@@ -4,6 +4,7 @@ import logging
 from dotenv import load_dotenv
 from twitch_bot.ai.ai_ollama_service import AIOllamaService
 from twitch_bot.event_dispatchers.event_dispatcher import EventDispatcher
+from twitch_bot.plugins.ai_ask_bot_plugin import AIAskPlugin
 from twitch_bot.plugins.ai_persona_pluign import AIPersonaPlugin
 from twitch_bot.plugins.ai_question_spam_bot_plugin import AIQuestionSpamPlugin
 from twitch_bot.plugins.helpers import DurationRange
@@ -29,11 +30,12 @@ ai_service = AIOllamaService()
 
 plugins = [
     LogStartBotPlugin(),
-    AIQuestionSpamPlugin(
-        ai_service=ai_service,
-        interval=DurationRange(min_seconds=60, max_seconds=60),
-    ),
+    # AIQuestionSpamPlugin(
+    #     ai_service=ai_service,
+    #     interval=DurationRange(min_seconds=60, max_seconds=60),
+    # ),
     AIPersonaPlugin(ai_service=ai_service),
+    AIAskPlugin(ai_service=ai_service),
 ]
 
 event_dispatcher = EventDispatcher(plugins)
