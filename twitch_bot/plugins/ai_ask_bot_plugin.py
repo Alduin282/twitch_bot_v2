@@ -7,7 +7,7 @@ from twitch_bot.twitch_bot import TwitchBot
 
 
 class AIAskPlugin(BotPlugin):
-    def __init__(self, ai_service: AIOllamaService, cooldown_seconds: int = 30):
+    def __init__(self, ai_service: AIOllamaService, cooldown_seconds: int = 30) -> None:
         self._ai = ai_service
         self._cooldown_seconds = cooldown_seconds
         self._cooldowns: dict[str, Cooldown] = {}
@@ -17,7 +17,7 @@ class AIAskPlugin(BotPlugin):
             EventType.MESSAGE: self._on_message,
         }
 
-    async def _on_message(self, bot: TwitchBot, message: Message):
+    async def _on_message(self, bot: TwitchBot, message: Message) -> None:
         content = (message.content or "").strip()
         if not content.startswith("!ask "):
             return
