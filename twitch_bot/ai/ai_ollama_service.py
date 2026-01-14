@@ -23,10 +23,7 @@ class AIOllamaService:
         self.persona = self.DEFAULT_PERSONA
 
     async def answer(self, question: str) -> str:
-        # TODO убрать дублирование по систем промпт
-        system_prompt = (
-            f"Описание твоего персонажа: {self.persona} Важно: {self.BASE_PROMPT}"
-        )
+        system_prompt = self._build_system_prompt()
 
         response = await asyncio.to_thread(
             ollama.chat,
@@ -41,6 +38,30 @@ class AIOllamaService:
         )
 
         return response["message"]["content"]
+
+    async def ask_streamer(self, context: str) -> str:
+        system_prompt = self._build_system_prompt()
+
+        user_prompt = (
+            f"Контекст стрима:\n{context}\n\n"
+            "Сгенерируй вопрос стримеру в стиле своего персонажа."
+        )
+
+        response = await asyncio.to_thread(
+            ollama.chat,
+            model=self.model,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+        )
+
+        return response["message"]["content"]
+
+    def _build_system_prompt(self) -> str:
+        return (
+            f"Описание твоего персонажа: {self.persona}\n" f"Важно: {self.BASE_PROMPT}"
+        )
 
     async def set_random_persona(self) -> None:
         prompt = (
@@ -62,25 +83,3 @@ class AIOllamaService:
         )
 
         self.persona = response["message"]["content"]
-
-    async def ask_streamer(self, context: str) -> str:
-
-        system_prompt = (
-            f"Описание твоего персонажа: {self.persona} Важно: {self.BASE_PROMPT}"
-        )
-
-        user_prompt = (
-            f"Контекст стрима:\n{context}\n\n"
-            "Сгенерируй вопрос стримеру в стиле своего персонажа."
-        )
-
-        response = await asyncio.to_thread(
-            ollama.chat,
-            model=self.model,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ],
-        )
-
-        return response["message"]["content"]
