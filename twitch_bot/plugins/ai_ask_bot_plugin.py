@@ -19,7 +19,7 @@ class AIAskPlugin(BotPlugin):
 
     async def _on_message(self, bot: TwitchBot, message: Message) -> None:
         content = (message.content or "").strip()
-        if not content.startswith("!ask "):
+        if not content.startswith("!ask"):
             return
 
         channel = message.channel
@@ -27,7 +27,7 @@ class AIAskPlugin(BotPlugin):
         if not cooldown.is_ready():
             return
 
-        question = content[5:].strip()
+        question = content[4:].strip()
         if not question:
             await channel.send("Нужно указать вопрос 😊 Пример: !ask как дела?")
             return
