@@ -30,10 +30,10 @@ ai_service = AIOllamaService()
 
 plugins = [
     LogStartBotPlugin(),
-    # AIQuestionSpamPlugin(
-    #     ai_service=ai_service,
-    #     interval=DurationRange(min_seconds=60, max_seconds=60),
-    # ),
+    AIQuestionSpamPlugin(
+        ai_service=ai_service,
+        interval=DurationRange(min_seconds=60, max_seconds=60),
+    ),
     AIPersonaPlugin(ai_service=ai_service),
     AIAskPlugin(ai_service=ai_service),
 ]

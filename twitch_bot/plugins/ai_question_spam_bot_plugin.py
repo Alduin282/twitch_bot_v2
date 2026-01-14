@@ -1,11 +1,13 @@
 import asyncio
 import logging
 
+from typing import Optional
 from twitch_bot.ai.ai_ollama_service import AIOllamaService
 from twitch_bot.definitions import EVENT_HANDLER, EventType
 from twitch_bot.plugins.helpers import DurationRange, sleep_in_range
 from twitch_bot.twitch_bot import TwitchBot
 from twitch_bot.plugins.bot_plugin import BotPlugin
+from twitchio.models import Stream
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +41,8 @@ class AIQuestionSpamPlugin(BotPlugin):
             await sleep_in_range(self._interval)
 
             for channel in connected_channels:
-                stream_context = await self._build_stream_context(bot, channel.name)
+                stream = await self._get_stream(bot, channel.name)
+                stream_context = self._build_stream_context(stream)
 
                 question = await self._ai_service.ask_streamer(stream_context)
                 # Twitch safety
@@ -47,12 +50,9 @@ class AIQuestionSpamPlugin(BotPlugin):
 
                 await channel.send(question)
 
-    async def _build_stream_context(self, bot: TwitchBot, channel_name: str) -> str:
-        streams = await bot.fetch_streams(user_logins=[channel_name])
-        if not streams:
+    def _build_stream_context(self, stream: Stream | None) -> str:
+        if not stream:
             return ""
-
-        stream = streams[0]
 
         title = stream.title or "Стрим без названия"
         game = stream.game_name or "Игра не указана"
@@ -65,3 +65,9 @@ class AIQuestionSpamPlugin(BotPlugin):
         context = f"Заголовок стрима: {title}. " f"Теги: {tags}. " f"Игра: {game}."
 
         return context
+
+    async def _get_stream(self, bot: TwitchBot, channel_name: str) -> Optional[Stream]:
+        streams = await bot.fetch_streams(user_logins=[channel_name])
+        if not streams:
+            return None
+        return streams[0]
