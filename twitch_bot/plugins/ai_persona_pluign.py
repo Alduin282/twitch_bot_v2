@@ -17,14 +17,15 @@ class AIPersonaPlugin(BotPlugin):
     async def _on_message(self, bot: TwitchBot, message: Message) -> None:
         content = (message.content or "").strip()
 
-        if content == "!persona":
-            await self._handle_show_persona(message)
+        command_handlers = {
+            "!persona": self._handle_show_persona,
+            "!persona random": self._handle_random,
+            "!persona reset": self._handle_reset,
+        }
 
-        if content == "!persona random":
-            await self._handle_random(message)
-
-        if content == "!persona reset":
-            await self._handle_reset(message)
+        command_handler = command_handlers.get(content)
+        if command_handler:
+            await command_handler(message)
 
     async def _handle_show_persona(self, message: Message):
         persona = self._ai.get_persona()
