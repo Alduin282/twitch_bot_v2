@@ -20,6 +20,7 @@ class TwitchBot(commands.Bot):
         )
         self.event_dispatcher = event_dispatcher
 
+    # TODO плохо конечно, что я решил внутрь бота прокидывать
     async def event_ready(self) -> None:
         await self.event_dispatcher.dispatch(EventType.READY, self)
 

@@ -4,7 +4,7 @@ import ollama
 
 class AIOllamaService:
     DEFAULT_PERSONA = (
-        "Ты — дружелюбный Twitch-бот по имени ПУДЖ. Общайся по-русски, "
+        "Ты — дружелюбный Twitch пользователь. Общайся по-русски, "
         "коротко (1–3 предложения), позитивно и по-человечески. "
         "Можно немного шутить. Без политики, жесткой токсичности "
         "и нарушений Twitch. Допустим легкий несерьёзный мат, "
@@ -15,6 +15,7 @@ class AIOllamaService:
         "Не нарушай правила Twitch. "
         "Будь толерантен к полу, расе и ориентации. "
         "Всегда отвечай только на русском языке."
+        "Не начинай с приветствия"
     )
 
     def __init__(self, model: str = "aya:8b", request_timeout: int = 30) -> None:
@@ -33,7 +34,7 @@ class AIOllamaService:
         )
         return response
 
-    async def ask_streamer(self, context: str) -> str:
+    async def ask_streamer(self, context: str = "без контекста") -> str:
         system_prompt = self._build_system_prompt()
 
         user_prompt = (
@@ -47,7 +48,6 @@ class AIOllamaService:
                 {"role": "user", "content": user_prompt},
             ]
         )
-
         return response
 
     async def set_random_persona(self) -> None:
@@ -82,7 +82,12 @@ class AIOllamaService:
                     ollama.chat,
                     model=self.model,
                     messages=messages,
-                    options={"stop": ["\n\n"]},
+                    options={
+                        "stop": ["\n\n"],
+                        "temperature": 0.8,
+                        "top_p": 0.9,
+                        "repeat_penalty": 1.3,
+                    },
                 ),
                 timeout=self.request_timeout,
             )
