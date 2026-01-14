@@ -4,12 +4,8 @@ import logging
 from dotenv import load_dotenv
 from twitch_bot.ai.ai_ollama_service import AIOllamaService
 from twitch_bot.event_dispatchers.event_dispatcher import EventDispatcher
-from twitch_bot.plugins.ai_ask_streamer_bot_plugin import AIQuestionSpamPlugin
+from twitch_bot.plugins.ai_question_spam_bot_plugin import AIQuestionSpamPlugin
 from twitch_bot.plugins.helpers import DurationRange
-from twitch_bot.plugins.laugh_reaction_bot_plugin import LaughReactionBotPlugin
-from twitch_bot.plugins.log_laugh_burst_bot_plugin import (
-    LogLaughBurstBotPlugin,
-)
 from twitch_bot.plugins.log_start_bot_plugin import LogStartBotPlugin
 from twitch_bot.twitch_bot import TwitchBot
 
