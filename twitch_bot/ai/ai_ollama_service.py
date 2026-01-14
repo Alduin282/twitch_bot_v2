@@ -3,7 +3,6 @@ import ollama
 
 
 class AIOllamaService:
-    # TODO сделать интерфейс для данного класса
     DEFAULT_PERSONA = (
         "Ты — дружелюбный Twitch-бот по имени ПУДЖ. Общайся по-русски, "
         "коротко (1–3 предложения), позитивно и по-человечески. "
@@ -18,26 +17,21 @@ class AIOllamaService:
         "Всегда отвечай только на русском языке."
     )
 
-    def __init__(self, model: str = "aya:8b") -> None:
+    def __init__(self, model: str = "aya:8b", request_timeout: int = 30) -> None:
         self.model = model
         self.persona = self.DEFAULT_PERSONA
+        self.request_timeout = request_timeout
 
     async def answer(self, question: str) -> str:
         system_prompt = self._build_system_prompt()
 
-        response = await asyncio.to_thread(
-            ollama.chat,
-            model=self.model,
-            messages=[
+        response = await self._chat(
+            [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": question},
-            ],
-            options={
-                "stop": ["\n\n"],
-            },
+            ]
         )
-
-        return response["message"]["content"]
+        return response
 
     async def ask_streamer(self, context: str) -> str:
         system_prompt = self._build_system_prompt()
@@ -47,21 +41,14 @@ class AIOllamaService:
             "Сгенерируй вопрос стримеру в стиле своего персонажа."
         )
 
-        response = await asyncio.to_thread(
-            ollama.chat,
-            model=self.model,
-            messages=[
+        response = await self._chat(
+            [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
-            ],
+            ]
         )
 
-        return response["message"]["content"]
-
-    def _build_system_prompt(self) -> str:
-        return (
-            f"Описание твоего персонажа: {self.persona}\n" f"Важно: {self.BASE_PROMPT}"
-        )
+        return response
 
     async def set_random_persona(self) -> None:
         prompt = (
@@ -73,13 +60,36 @@ class AIOllamaService:
             "Пиши только описание личности, без разговорного ответа."
         )
 
-        # TODO ОБРАБОТКА ОШИБКО?
-        response = await asyncio.to_thread(
-            ollama.chat,
-            model=self.model,
-            messages=[
-                {"role": "user", "content": prompt},
-            ],
+        response = await self._chat([{"role": "user", "content": prompt}])
+
+        self.persona = response
+
+    def reset_persona(self) -> None:
+        self.persona = self.DEFAULT_PERSONA
+
+    def get_persona(self) -> str:
+        return self.persona
+
+    def _build_system_prompt(self) -> str:
+        return (
+            f"Описание твоего персонажа: {self.persona}\n" f"Важно: {self.BASE_PROMPT}"
         )
 
-        self.persona = response["message"]["content"]
+    async def _chat(self, messages: list[dict]) -> str:
+        try:
+            response = await asyncio.wait_for(
+                asyncio.to_thread(
+                    ollama.chat,
+                    model=self.model,
+                    messages=messages,
+                    options={"stop": ["\n\n"]},
+                ),
+                timeout=self.request_timeout,
+            )
+
+            return response.get("message", {}).get("content", "…у меня ступор 🥲")
+
+        except asyncio.TimeoutError:
+            return "Не повезло. Попробуй ещё раз, может получится 😅"
+        except Exception:
+            return "Что-то пошло не так 😬"
