@@ -18,5 +18,5 @@ class LogStartBotPlugin(BotPlugin):
         connected_channels_names = [channel.name for channel in bot.connected_channels]
         logger.info(f"[LogStartBotPlugin] Logged in as {bot.nick}")
         logger.info(
-            f"[LogStartBotPlugin] Connected channels is {connected_channels_names}"
+            f"[LogStartBotPlugin] Connected channels are {connected_channels_names}"
         )
