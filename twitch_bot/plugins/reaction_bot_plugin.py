@@ -38,7 +38,7 @@ class ReactionRule:
             raise ValueError("ReactionRule must have at least one reply")
 
 
-class ReactionPlugin(BotPlugin):
+class ReactionBotPlugin(BotPlugin):
     def __init__(self, reaction_rule: ReactionRule) -> None:
         self.reaction_rule = reaction_rule
         self._cooldowns: dict[str, Cooldown] = {}

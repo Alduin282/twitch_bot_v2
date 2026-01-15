@@ -26,14 +26,14 @@ TWITCH_SECRET_KEY = os.getenv("TWITCH_SECRET_KEY_ALDUIN")
 if TWITCH_SECRET_KEY is None:
     raise RuntimeError("Twitch secret key is not found")
 
-ai_service = AIOllamaService()
+ai_service = AIOllamaService(model="phi3")
 
 plugins = [
     LogStartBotPlugin(),
-    # AIQuestionSpamPlugin(
-    #     ai_service=ai_service,
-    #     interval=DurationRange(min_seconds=60, max_seconds=60),
-    # ),
+    AIQuestionSpamPlugin(
+        ai_service=ai_service,
+        interval=DurationRange(min_seconds=60, max_seconds=60),
+    ),
     AIPersonaPlugin(ai_service=ai_service),
     AIAskPlugin(ai_service=ai_service),
 ]
