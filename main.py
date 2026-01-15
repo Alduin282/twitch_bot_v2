@@ -2,11 +2,12 @@ import os
 import logging
 
 from dotenv import load_dotenv
+from twitch_bot.ai.ai_ollama_service import AIOllamaService
 from twitch_bot.event_dispatchers.event_dispatcher import EventDispatcher
-from twitch_bot.plugins.laugh_reaction_bot_plugin import LaughReactionBotPlugin
-from twitch_bot.plugins.log_laugh_burst_bot_plugin import (
-    LogLaughBurstBotPlugin,
-)
+from twitch_bot.plugins.ai_ask_bot_plugin import AIAskPlugin
+from twitch_bot.plugins.ai_persona_pluign import AIPersonaPlugin
+from twitch_bot.plugins.ai_question_spam_bot_plugin import AIQuestionSpamPlugin
+from twitch_bot.plugins.helpers import DurationRange
 from twitch_bot.plugins.log_start_bot_plugin import LogStartBotPlugin
 from twitch_bot.twitch_bot import TwitchBot
 
@@ -25,23 +26,25 @@ TWITCH_SECRET_KEY = os.getenv("TWITCH_SECRET_KEY_ALDUIN")
 if TWITCH_SECRET_KEY is None:
     raise RuntimeError("Twitch secret key is not found")
 
+ai_service = AIOllamaService()
+
 plugins = [
     LogStartBotPlugin(),
-    LaughReactionBotPlugin(30),
-    LogLaughBurstBotPlugin(
-        log_file="C:/twitch_logs/twitch_burst_log.txt",
-        window_size_messages=1,
-        required_matches=1,
-        cooldown_seconds=30,
-    ),
+    # AIQuestionSpamPlugin(
+    #     ai_service=ai_service,
+    #     interval=DurationRange(min_seconds=60, max_seconds=60),
+    # ),
+    AIPersonaPlugin(ai_service=ai_service),
+    AIAskPlugin(ai_service=ai_service),
 ]
-
 
 event_dispatcher = EventDispatcher(plugins)
 
+# TODO подумать над подключенными каналами, все плагины кроме консоли
+# работают на всех каналах
 bot = TwitchBot(
     token=TWITCH_TOKEN_AOTH,
-    channels_to_connect=["melharucos", "C_a_k_e"],
+    channels_to_connect=["alduin3115"],
     twitch_secret_key=TWITCH_SECRET_KEY,
     event_dispatcher=event_dispatcher,
 )
