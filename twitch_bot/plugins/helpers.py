@@ -21,6 +21,7 @@ class DurationRange:
     min_seconds: float = 0.0
     max_seconds: float = 0.0
 
+    # TODO валидация на больше 0
     def __post_init__(self):
         if self.min_seconds > self.max_seconds:
             raise ValueError(

@@ -1,7 +1,6 @@
 import random
 
 from dataclasses import dataclass, field
-from typing import Sequence
 from uuid import uuid4
 from twitch_bot.definitions import EVENT_HANDLER, EventType
 from twitch_bot.plugins.bot_plugin import BotPlugin
@@ -12,13 +11,13 @@ from twitchio import Message
 
 @dataclass
 class ReactionRule:
-    triggers: Sequence[str]
-    replies: Sequence[str]
+    triggers: tuple[str, ...]
+    replies: tuple[str, ...]
     reaction_probability: float
     ignore_echo: bool
     cooldown_seconds: float
     pre_reaction_delay: DurationRange
-    _uid: str = field(default_factory=lambda: str(uuid4()))
+    _uid: str = field(default_factory=lambda: str(uuid4()), init=False)
 
     def __post_init__(self):
         if not (0.0 <= self.reaction_probability <= 1.0):
@@ -41,8 +40,8 @@ class ReactionRule:
 class ReactionBotPlugin(BotPlugin):
     def __init__(
         self,
-        triggers: Sequence[str],
-        replies: Sequence[str],
+        triggers: tuple[str, ...],
+        replies: tuple[str, ...],
         reaction_probability: float = 1.0,
         ignore_echo: bool = True,
         cooldown_seconds: float = 10,
