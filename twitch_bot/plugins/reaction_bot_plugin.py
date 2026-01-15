@@ -14,10 +14,10 @@ from twitchio import Message
 class ReactionRule:
     triggers: Sequence[str]
     replies: Sequence[str]
-    reaction_probability: float = 1.0
-    ignore_echo: bool = True
-    cooldown_seconds: float = 10
-    pre_reaction_delay: DurationRange = field(default_factory=DurationRange)
+    reaction_probability: float
+    ignore_echo: bool
+    cooldown_seconds: float
+    pre_reaction_delay: DurationRange
     _uid: str = field(default_factory=lambda: str(uuid4()))
 
     def __post_init__(self):
@@ -39,8 +39,26 @@ class ReactionRule:
 
 
 class ReactionBotPlugin(BotPlugin):
-    def __init__(self, reaction_rule: ReactionRule) -> None:
-        self.reaction_rule = reaction_rule
+    def __init__(
+        self,
+        triggers: Sequence[str],
+        replies: Sequence[str],
+        reaction_probability: float = 1.0,
+        ignore_echo: bool = True,
+        cooldown_seconds: float = 10,
+        pre_reaction_delay_max: float = 0,
+        pre_reaction_delay_min: float = 0,
+    ) -> None:
+        self.reaction_rule = ReactionRule(
+            triggers=triggers,
+            replies=replies,
+            reaction_probability=reaction_probability,
+            ignore_echo=ignore_echo,
+            cooldown_seconds=cooldown_seconds,
+            pre_reaction_delay=DurationRange(
+                pre_reaction_delay_min, pre_reaction_delay_max
+            ),
+        )
         self._cooldowns: dict[str, Cooldown] = {}
 
     def get_event_handlers(self) -> dict[EventType, EVENT_HANDLER]:
