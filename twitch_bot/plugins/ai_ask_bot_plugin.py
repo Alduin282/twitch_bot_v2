@@ -33,7 +33,7 @@ class AIAskPlugin(BotPlugin):
             return
 
         answer = await self._ai.answer(question)
-        await channel.send(answer[:499])
+        await channel.send(answer[:500])
 
     def _get_channel_cooldown(self, channel_name: str) -> Cooldown:
         return self._cooldowns.setdefault(

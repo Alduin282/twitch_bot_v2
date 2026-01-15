@@ -45,10 +45,15 @@ class AIQuestionSpamPlugin(BotPlugin):
                 stream_context = self._build_stream_context(stream)
 
                 question = await self._ai_service.ask_streamer(stream_context)
-                # Twitch safety
-                question = question[:499]
+                question = question[:500]
 
                 await channel.send(question)
+
+    async def _get_stream(self, bot: TwitchBot, channel_name: str) -> Optional[Stream]:
+        streams = await bot.fetch_streams(user_logins=[channel_name])
+        if not streams:
+            return None
+        return streams[0]
 
     def _build_stream_context(self, stream: Stream | None) -> str:
         if not stream:
@@ -65,9 +70,3 @@ class AIQuestionSpamPlugin(BotPlugin):
         context = f"Заголовок стрима: {title}. " f"Теги: {tags}. " f"Игра: {game}."
 
         return context
-
-    async def _get_stream(self, bot: TwitchBot, channel_name: str) -> Optional[Stream]:
-        streams = await bot.fetch_streams(user_logins=[channel_name])
-        if not streams:
-            return None
-        return streams[0]

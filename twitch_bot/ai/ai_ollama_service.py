@@ -1,5 +1,8 @@
 import asyncio
+import logging
 import ollama
+
+logger = logging.getLogger(__name__)
 
 
 class AIOllamaService:
@@ -55,7 +58,7 @@ class AIOllamaService:
             "Сгенерируй интересного персонажа. Персонаж должен отличаться особенным "
             "характером. Персонаж может быть из любого времени. "
             "Персонаж должен использовать какой то особый жаргон (укажи конкретно)."
-            "Начни с 'ТЫ - '."
+            "Начни с 'Ты - '."
             "Пиши только описание личности, без разговорного ответа."
         )
 
@@ -94,6 +97,14 @@ class AIOllamaService:
             return response.get("message", {}).get("content", "…у меня ступор 🥲")
 
         except asyncio.TimeoutError:
+            logger.warning(
+                "[AIOllamaService] Timeout after %s seconds",
+                self.request_timeout,
+            )
             return "Не повезло. Попробуй ещё раз, может получится 😅"
-        except Exception:
+        except Exception as exc:
+            logger.exception(
+                "[AIOllamaService] Unexpected error during ollama.chat: %s",
+                exc,
+            )
             return "Что-то пошло не так 😬"

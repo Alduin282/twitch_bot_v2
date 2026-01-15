@@ -29,7 +29,7 @@ class AIPersonaPlugin(BotPlugin):
 
     async def _handle_show_persona(self, message: Message):
         persona = self._ai.get_persona()
-        await message.channel.send(persona[:499])
+        await message.channel.send(persona[:500])
 
     async def _handle_random(self, message: Message):
         if not self._is_author_mod(message):
