@@ -77,3 +77,9 @@ class TestReactionRuleValidation(ReactionRuleTestBase):
 
         self.assertEqual(parsed.version, 4)
         self.assertEqual(str(parsed), rule._uid)
+
+    def test__trigger_with_multiple_words__value_error(self):
+        trigger_with_multiple_words = ("trigger with spaces",)
+
+        with self.assertRaises(ValueError):
+            self.create_reaction_rule(triggers=trigger_with_multiple_words)

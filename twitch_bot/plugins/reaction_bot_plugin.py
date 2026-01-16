@@ -36,6 +36,12 @@ class ReactionRule:
         if not self.replies:
             raise ValueError("ReactionRule must have at least one reply")
 
+        for trigger in self.triggers:
+            if len(trigger.split()) != 1:
+                raise ValueError(
+                    f"Trigger must be a single word without spaces, got '{trigger}'"
+                )
+
 
 class ReactionBotPlugin(BotPlugin):
     def __init__(
