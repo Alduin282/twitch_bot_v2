@@ -1,4 +1,5 @@
 import unittest
+import uuid
 from twitch_bot.plugins.helpers import DurationRange
 from twitch_bot.plugins.reaction_bot_plugin import ReactionRule
 
@@ -68,3 +69,11 @@ class TestReactionRuleValidation(ReactionRuleTestBase):
         empty_replies = ()
         with self.assertRaises(ValueError):
             self.create_reaction_rule(replies=empty_replies)
+
+    def test__crate_reaction_rule__valid_uuid4(self):
+        rule = self.create_reaction_rule()
+
+        parsed = uuid.UUID(rule._uid, version=4)
+
+        self.assertEqual(parsed.version, 4)
+        self.assertEqual(str(parsed), rule._uid)

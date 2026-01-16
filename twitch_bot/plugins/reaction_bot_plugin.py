@@ -45,8 +45,8 @@ class ReactionBotPlugin(BotPlugin):
         reaction_probability: float = 1.0,
         ignore_echo: bool = True,
         cooldown_seconds: float = 10,
-        pre_reaction_delay_max: float = 0,
         pre_reaction_delay_min: float = 0,
+        pre_reaction_delay_max: float = 0,
     ) -> None:
         self.reaction_rule = ReactionRule(
             triggers=triggers,

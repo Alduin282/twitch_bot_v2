@@ -6,7 +6,7 @@ from twitch_bot.plugins.reaction_bot_plugin import ReactionBotPlugin
 
 class TestReactionBotPluginGetEventHandlers(unittest.TestCase):
     def setUp(self):
-        self.plugin = ReactionBotPlugin(triggers=["trigger"], replies=["reply"])
+        self.plugin = ReactionBotPlugin(triggers=("trigger",), replies=("reply",))
 
     def test__result__contains_message_event(self) -> None:
         handlers = self.plugin.get_event_handlers()
