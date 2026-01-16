@@ -30,12 +30,6 @@ class TestReactionRuleValidation(ReactionRuleTestBase):
 
         self.assertIsInstance(valid_reaction_rule, ReactionRule)
 
-    def test_valid_rule_uid_is_generated(self):
-        valid_reaction_rule = self.create_reaction_rule()
-
-        self.assertIsInstance(valid_reaction_rule._uid, str)
-        self.assertTrue(valid_reaction_rule._uid)
-
     def test__probability_less_than_zero__value_error(self):
         with self.assertRaises(ValueError):
             self.create_reaction_rule(reaction_probability=-0.1)

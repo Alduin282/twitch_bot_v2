@@ -6,14 +6,11 @@ from twitchio import Message, Channel, User
 
 
 class TestReactionBotPluginShouldReact(ReactionPluginTestBase):
-    def setUp(self) -> None:
-        pass
 
     def test__trigger_in_content__should_react(self):
-        test_triggers = ("trigger",)
-        test_replies = ("reply",)
-        message_with_trigger = self._make_message(test_triggers[0])
-        reaction_plugin = self.create_reaction_plugin(test_triggers, test_replies)
+        triggers = ("trigger",)
+        message_with_trigger = self._make_message(triggers[0])
+        reaction_plugin = self.create_reaction_plugin(triggers)
 
         result = reaction_plugin._should_react(
             reaction_plugin.reaction_rule, message_with_trigger
@@ -21,10 +18,9 @@ class TestReactionBotPluginShouldReact(ReactionPluginTestBase):
         self.assertTrue(result)
 
     def test__trigger_not_in_content__should_not_react(self):
-        test_triggers = ("trigger",)
-        test_replies = ("reply",)
+        triggers = ("trigger",)
         message_without_trigger = self._make_message("message_without_trigger")
-        reaction_plugin = self.create_reaction_plugin(test_triggers, test_replies)
+        reaction_plugin = self.create_reaction_plugin(triggers)
 
         result = reaction_plugin._should_react(
             reaction_plugin.reaction_rule, message_without_trigger
@@ -112,7 +108,7 @@ class TestReactionBotPluginShouldReact(ReactionPluginTestBase):
         mock_channel = MagicMock(spec=Channel)
         mock_channel.name = "test_channel"
         mock_user = MagicMock(spec=User)
-        mock_user.name = "viewer"
+        mock_user.name = "user_name"
         return Message(
             content=content,
             author=mock_user,
