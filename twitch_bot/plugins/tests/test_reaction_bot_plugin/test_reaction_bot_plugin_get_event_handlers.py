@@ -8,12 +8,12 @@ class TestReactionBotPluginGetEventHandlers(unittest.TestCase):
     def setUp(self):
         self.plugin = ReactionBotPlugin(triggers=("trigger",), replies=("reply",))
 
-    def test__result__contains_message_event(self) -> None:
+    def test__result__contains_message_event(self):
         handlers = self.plugin.get_event_handlers()
 
         self.assertIn(EventType.MESSAGE, handlers)
 
-    def test__on_message_event_handler__callable_and_has_right_name(self) -> None:
+    def test__on_message_event_handler__callable_and_has_right_name(self):
         handlers = self.plugin.get_event_handlers()
 
         self.assertTrue(callable(handlers[EventType.MESSAGE]))
