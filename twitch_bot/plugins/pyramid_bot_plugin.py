@@ -7,7 +7,7 @@ from twitchio import Message
 class PyramidBotPlugin(BotPlugin):
     # TODO дать возможность задавать смайл пирамиды, если нет юзаем дефолтный
     # TODO список конретных пользаков , которые могут спамить этой темой
-    COMMAND_NAME = "pyramid"
+    COMMAND = "pyramid"
     NO_PYRAMID_HEIGHT_MESSAGE = "высота пирамиды не задана"
     PYRAMID_HEIGHT_IS_NOT_NUMBER_MESSAGE = "высота пирамиды не задана"
     PYRAMID_HEIGHT_LESS_MINIMUM_MESSAGE = "высота пирмаиды меньше минимальной"
@@ -23,7 +23,7 @@ class PyramidBotPlugin(BotPlugin):
 
     async def _on_message(self, bot: TwitchBot, message: Message) -> None:
         text_of_command = message.content or ""
-        if not text_of_command.startswith(self.COMMAND_NAME):
+        if not text_of_command.startswith(self.COMMAND):
             return
 
         channel = message.channel

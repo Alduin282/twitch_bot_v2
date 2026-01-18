@@ -6,9 +6,10 @@ class TestPyramidBotPluginValidateCommand(unittest.TestCase):
 
     def setUp(self):
         self.plugin: PyramidBotPlugin = PyramidBotPlugin()
+        self.command = self.plugin.COMMAND
 
     def test__no_height_provided__invalid(self):
-        no_height_command = "pyramid"
+        no_height_command = f"{self.command}"
 
         ok, problem_message = self.plugin._validate_pyramid_command(no_height_command)
 
@@ -16,7 +17,7 @@ class TestPyramidBotPluginValidateCommand(unittest.TestCase):
         self.assertEqual(problem_message, self.plugin.NO_PYRAMID_HEIGHT_MESSAGE)
 
     def test__height_not_number__invalid(self):
-        height_not_number_command = "pyramid abs"
+        height_not_number_command = f"{self.command} abs"
 
         ok, problem_message = self.plugin._validate_pyramid_command(
             height_not_number_command
@@ -29,7 +30,7 @@ class TestPyramidBotPluginValidateCommand(unittest.TestCase):
 
     def test__height_less_than_minimum__invalid(self):
         height_less_then_minimum_command = (
-            f"pyramid {self.plugin.MINIMUM_PYRAMID_HEIGHT - 1}"
+            f"{self.command} {self.plugin.MINIMUM_PYRAMID_HEIGHT - 1}"
         )
 
         ok, problem_message = self.plugin._validate_pyramid_command(
@@ -43,7 +44,7 @@ class TestPyramidBotPluginValidateCommand(unittest.TestCase):
 
     def test__height_more_than_maximum__invalid(self):
         height_more_then_maximum_command = (
-            f"pyramid {self.plugin.MAXIMUM_PYRAMID_HEIGHT + 1}"
+            f"{self.command} {self.plugin.MAXIMUM_PYRAMID_HEIGHT + 1}"
         )
 
         ok, problem_message = self.plugin._validate_pyramid_command(
@@ -56,7 +57,7 @@ class TestPyramidBotPluginValidateCommand(unittest.TestCase):
         )
 
     def test__valid_height__valid(self):
-        valid_command = "pyramid 5"
+        valid_command = f"{self.command} 5"
 
         ok, problem_message = self.plugin._validate_pyramid_command(valid_command)
 
@@ -65,7 +66,7 @@ class TestPyramidBotPluginValidateCommand(unittest.TestCase):
 
     def test__valid_command_with_third_argument__ignore_third_argument(self):
         third_argument = "third_argument"
-        command_with_third_argument = f"pyramid 3 {third_argument}"
+        command_with_third_argument = f"{self.command} 3 {third_argument}"
 
         ok, problem_message = self.plugin._validate_pyramid_command(
             command_with_third_argument

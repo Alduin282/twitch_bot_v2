@@ -10,6 +10,7 @@ class TestPyramidBotPluginOnMessage(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self) -> None:
         self.plugin: PyramidBotPlugin = PyramidBotPlugin()
         self.default_smile = self.plugin.DEFAULT_PYRAMID_SMILE
+        self.command = self.plugin.COMMAND
 
         self.bot: MagicMock = MagicMock(spec=TwitchBot)
 
@@ -25,7 +26,7 @@ class TestPyramidBotPluginOnMessage(unittest.IsolatedAsyncioTestCase):
         self.message.channel.send.assert_not_called()
 
     async def test__invalid_command__sends_problem_message(self) -> None:
-        invalid_command = "pyramid"
+        invalid_command = f"{self.command}"
         problem_message = self.plugin.NO_PYRAMID_HEIGHT_MESSAGE
         self.message.content = invalid_command
 
@@ -36,7 +37,7 @@ class TestPyramidBotPluginOnMessage(unittest.IsolatedAsyncioTestCase):
         )
 
     async def test__valid_command__sends_pyramid(self) -> None:
-        valid_command = "pyramid 3"
+        valid_command = f"{self.command} 3"
         self.message.content = valid_command
 
         await self.plugin._on_message(self.bot, self.message)
