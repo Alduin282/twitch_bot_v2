@@ -6,7 +6,7 @@ from twitch_bot.plugins.helpers import DurationRange
 class TestDurationRangeValidation(unittest.TestCase):
 
     def test__valid_range__no_errors(self):
-        duration: DurationRange = DurationRange(
+        duration = DurationRange(
             min_seconds=0.5,
             max_seconds=1.0,
         )
@@ -15,7 +15,7 @@ class TestDurationRangeValidation(unittest.TestCase):
         self.assertEqual(duration.max_seconds, 1.0)
 
     def test__zero_min_and_max__no_errors(self):
-        duration: DurationRange = DurationRange(
+        duration = DurationRange(
             min_seconds=0.0,
             max_seconds=0.0,
         )

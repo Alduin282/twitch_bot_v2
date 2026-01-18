@@ -10,7 +10,7 @@ class TestCooldown(unittest.TestCase):
         cooldown_duration = 10.0
         current_time = 100.0
 
-        cooldown: Cooldown = Cooldown(duration_seconds=cooldown_duration)
+        cooldown = Cooldown(duration_seconds=cooldown_duration)
 
         with patch("twitch_bot.plugins.helpers.time.time", return_value=current_time):
             self.assertTrue(cooldown.is_ready())
@@ -20,7 +20,7 @@ class TestCooldown(unittest.TestCase):
         trigger_time = 100.0
         time_in_cooldown_window = 105.0
 
-        cooldown: Cooldown = Cooldown(duration_seconds=cooldown_duration)
+        cooldown = Cooldown(duration_seconds=cooldown_duration)
         with patch("twitch_bot.plugins.helpers.time.time", return_value=trigger_time):
             cooldown.trigger()
 
@@ -34,7 +34,7 @@ class TestCooldown(unittest.TestCase):
         trigger_time = 100.0
         time_after_cooldown_window = 110.0
 
-        cooldown: Cooldown = Cooldown(duration_seconds=cooldown_duration)
+        cooldown = Cooldown(duration_seconds=cooldown_duration)
         with patch("twitch_bot.plugins.helpers.time.time", return_value=trigger_time):
             cooldown.trigger()
 
@@ -48,7 +48,7 @@ class TestCooldown(unittest.TestCase):
         cooldown_duration = 10.0
         trigger_time = 123.456
 
-        cooldown: Cooldown = Cooldown(duration_seconds=cooldown_duration)
+        cooldown = Cooldown(duration_seconds=cooldown_duration)
         with patch("twitch_bot.plugins.helpers.time.time", return_value=trigger_time):
             cooldown.trigger()
 
@@ -58,7 +58,7 @@ class TestCooldown(unittest.TestCase):
         cooldown_duration = 0.0
         trigger_time = 100.0
 
-        cooldown: Cooldown = Cooldown(duration_seconds=cooldown_duration)
+        cooldown = Cooldown(duration_seconds=cooldown_duration)
         with patch("twitch_bot.plugins.helpers.time.time", return_value=trigger_time):
             cooldown.trigger()
 
