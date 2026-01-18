@@ -5,11 +5,11 @@ from twitch_bot.plugins.pyramid_bot_plugin import PyramidBotPlugin
 
 class TestPyramidBotPluginBuildPyramid(unittest.TestCase):
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.plugin: PyramidBotPlugin = PyramidBotPlugin()
         self.default_smile = self.plugin.DEFAULT_PYRAMID_SMILE
 
-    def test__build_pyramid_height__pyramid_correct(self):
+    def test__build_pyramid_height__pyramid_correct(self) -> None:
         pyramid = self.plugin._build_pyramid(1)
 
         self.assertEqual(
@@ -19,7 +19,7 @@ class TestPyramidBotPluginBuildPyramid(unittest.TestCase):
             ],
         )
 
-    def test__build_pyramid_height_2__pyramid_correct(self):
+    def test__build_pyramid_height_2__pyramid_correct(self) -> None:
         pyramid = self.plugin._build_pyramid(2)
 
         self.assertEqual(
@@ -33,7 +33,7 @@ class TestPyramidBotPluginBuildPyramid(unittest.TestCase):
 
     def test__build_pyramid_length_for_all_valid_heights__pyramid_length_correct(
         self,
-    ):
+    ) -> None:
         for height in range(
             self.plugin.MINIMUM_PYRAMID_HEIGHT,
             self.plugin.MAXIMUM_PYRAMID_HEIGHT + 1,

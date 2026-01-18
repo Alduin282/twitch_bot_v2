@@ -4,11 +4,11 @@ from twitch_bot.plugins.pyramid_bot_plugin import PyramidBotPlugin
 
 class TestPyramidBotPluginValidateCommand(unittest.TestCase):
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.plugin: PyramidBotPlugin = PyramidBotPlugin()
         self.command = self.plugin.COMMAND
 
-    def test__no_height_provided__invalid(self):
+    def test__no_height_provided__invalid(self) -> None:
         no_height_command = f"{self.command}"
 
         ok, problem_message = self.plugin._validate_pyramid_command(no_height_command)
@@ -16,7 +16,7 @@ class TestPyramidBotPluginValidateCommand(unittest.TestCase):
         self.assertFalse(ok)
         self.assertEqual(problem_message, self.plugin.NO_PYRAMID_HEIGHT_MESSAGE)
 
-    def test__height_not_number__invalid(self):
+    def test__height_not_number__invalid(self) -> None:
         height_not_number_command = f"{self.command} abs"
 
         ok, problem_message = self.plugin._validate_pyramid_command(
@@ -28,7 +28,7 @@ class TestPyramidBotPluginValidateCommand(unittest.TestCase):
             problem_message, self.plugin.PYRAMID_HEIGHT_IS_NOT_NUMBER_MESSAGE
         )
 
-    def test__height_less_than_minimum__invalid(self):
+    def test__height_less_than_minimum__invalid(self) -> None:
         height_less_then_minimum_command = (
             f"{self.command} {self.plugin.MINIMUM_PYRAMID_HEIGHT - 1}"
         )
@@ -42,7 +42,7 @@ class TestPyramidBotPluginValidateCommand(unittest.TestCase):
             problem_message, self.plugin.PYRAMID_HEIGHT_LESS_MINIMUM_MESSAGE
         )
 
-    def test__height_more_than_maximum__invalid(self):
+    def test__height_more_than_maximum__invalid(self) -> None:
         height_more_then_maximum_command = (
             f"{self.command} {self.plugin.MAXIMUM_PYRAMID_HEIGHT + 1}"
         )
@@ -56,7 +56,7 @@ class TestPyramidBotPluginValidateCommand(unittest.TestCase):
             problem_message, self.plugin.PYRAMID_HEIGHT_MORE_MAXIMUM_MESSAGE
         )
 
-    def test__valid_height__valid(self):
+    def test__valid_height__valid(self) -> None:
         valid_command = f"{self.command} 5"
 
         ok, problem_message = self.plugin._validate_pyramid_command(valid_command)
@@ -64,7 +64,7 @@ class TestPyramidBotPluginValidateCommand(unittest.TestCase):
         self.assertTrue(ok)
         self.assertEqual(problem_message, "")
 
-    def test__valid_command_with_third_argument__ignore_third_argument(self):
+    def test__valid_command_with_third_argument__ignore_third_argument(self) -> None:
         third_argument = "third_argument"
         command_with_third_argument = f"{self.command} 3 {third_argument}"
 

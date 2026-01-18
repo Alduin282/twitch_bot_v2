@@ -6,7 +6,7 @@ from twitch_bot.plugins.reaction_bot_plugin import ReactionBotPlugin, ReactionRu
 
 class TestReactionBotPluginInit(unittest.TestCase):
 
-    def test__plugin_initializes__initialized_correctly(self):
+    def test__plugin_initializes__initialized_correctly(self) -> None:
         test_replies = ("test_reply",)
         test_triggers = ("test_trigger",)
         test_cooldown = 1

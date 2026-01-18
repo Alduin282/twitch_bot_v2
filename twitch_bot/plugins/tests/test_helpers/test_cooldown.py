@@ -6,7 +6,7 @@ from twitch_bot.plugins.helpers import Cooldown
 
 class TestCooldown(unittest.TestCase):
 
-    def test__new_cooldown__is_ready(self):
+    def test__new_cooldown__is_ready(self) -> None:
         cooldown_duration = 10.0
         current_time = 100.0
 
