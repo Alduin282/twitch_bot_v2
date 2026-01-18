@@ -37,7 +37,7 @@ class DurationRange:
 
 
 async def sleep_in_range(duration_range: DurationRange) -> None:
-    if not duration_range.max_seconds > 0:
+    if duration_range.max_seconds <= 0:
         return
 
     await asyncio.sleep(
