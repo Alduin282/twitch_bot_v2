@@ -22,7 +22,7 @@ class LaughRule:
     window_size_messages: int
     required_matches: int
     cooldown_seconds: int
-    log_file: str
+    log_file_path: str
 
     def __post_init__(self):
         if not self.laugh_markers:
@@ -48,14 +48,14 @@ class LogLaughBurstBotPlugin(BotPlugin):
         window_size_messages: int = 10,
         required_matches: int = 6,
         cooldown_seconds: int = 180,
-        log_file: str = "twitch_burst_log.txt",
+        log_file_path: str = "twitch_burst_log.txt",
     ) -> None:
         self.laugh_rule = LaughRule(
             laugh_markers=laugh_markers,
             window_size_messages=window_size_messages,
             required_matches=required_matches,
             cooldown_seconds=cooldown_seconds,
-            log_file=log_file,
+            log_file_path=log_file_path,
         )
         self._file_lock = asyncio.Lock()
         self._cooldowns: dict[str, Cooldown] = {}
@@ -156,5 +156,5 @@ class LogLaughBurstBotPlugin(BotPlugin):
             return None
 
     def _append_log(self, log_line: str):
-        with open(self.laugh_rule.log_file, "a", encoding="utf-8") as f:
+        with open(self.laugh_rule.log_file_path, "a", encoding="utf-8") as f:
             f.write(log_line)
