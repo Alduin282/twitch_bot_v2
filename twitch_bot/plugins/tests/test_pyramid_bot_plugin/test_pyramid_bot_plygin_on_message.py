@@ -14,9 +14,10 @@ class TestPyramidBotPluginOnMessage(unittest.IsolatedAsyncioTestCase):
 
         self.bot: MagicMock = MagicMock(spec=TwitchBot)
 
+        self.author = "test_user"
         self.message: MagicMock = MagicMock()
         self.message.channel.send = AsyncMock()
-        self.message.author.name = "test_user"
+        self.message.author.name = self.author
 
     async def test__not_pyramid_command__no_action(self) -> None:
         self.message.content = "not_pyramid_command"
@@ -33,7 +34,7 @@ class TestPyramidBotPluginOnMessage(unittest.IsolatedAsyncioTestCase):
         await self.plugin._on_message(self.bot, self.message)
 
         self.message.channel.send.assert_awaited_once_with(
-            f"@test_user {problem_message}"
+            f"@{self.author} {problem_message}"
         )
 
     async def test__valid_command__sends_pyramid(self) -> None:
