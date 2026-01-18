@@ -25,7 +25,7 @@ class TestReactionBotPluginOnMessage(
     @patch.object(ReactionBotPlugin, "_react_with_delay", new_callable=AsyncMock)
     async def test__cooldown_not_ready__no_reaction(
         self, mock_react_with_delay: AsyncMock
-    ):
+    ) -> None:
         cooldown: MagicMock = MagicMock(spec=Cooldown)
         cooldown.is_ready.return_value = False
 

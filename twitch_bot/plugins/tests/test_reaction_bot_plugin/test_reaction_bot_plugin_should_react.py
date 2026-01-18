@@ -7,7 +7,7 @@ from twitchio import Message, Channel, User
 
 class TestReactionBotPluginShouldReact(ReactionPluginTestBase):
 
-    def test__trigger_in_content__should_react(self):
+    def test__trigger_in_content__should_react(self) -> None:
         triggers = ("trigger",)
         message_with_trigger = self._make_message(triggers[0])
         reaction_plugin = self.create_reaction_plugin(triggers)
@@ -17,7 +17,7 @@ class TestReactionBotPluginShouldReact(ReactionPluginTestBase):
         )
         self.assertTrue(result)
 
-    def test__trigger_not_in_content__should_not_react(self):
+    def test__trigger_not_in_content__should_not_react(self) -> None:
         triggers = ("trigger",)
         message_without_trigger = self._make_message("message_without_trigger")
         reaction_plugin = self.create_reaction_plugin(triggers)
@@ -27,7 +27,7 @@ class TestReactionBotPluginShouldReact(ReactionPluginTestBase):
         )
         self.assertFalse(result)
 
-    def test__echo_and_ignore_echo__should_not_react(self):
+    def test__echo_and_ignore_echo__should_not_react(self) -> None:
         reaction_plugin = self.create_reaction_plugin(ignore_echo=True)
         echo_message_with_trigger = self._make_message(
             reaction_plugin.reaction_rule.triggers[0], echo=True
@@ -38,7 +38,7 @@ class TestReactionBotPluginShouldReact(ReactionPluginTestBase):
         )
         self.assertFalse(result)
 
-    def test__echo_but_ignore_echo_false__should_react(self):
+    def test__echo_but_ignore_echo_false__should_react(self) -> None:
         reaction_plugin = self.create_reaction_plugin(ignore_echo=False)
         echo_message_with_trigger = self._make_message(
             reaction_plugin.reaction_rule.triggers[0], echo=True
@@ -49,7 +49,7 @@ class TestReactionBotPluginShouldReact(ReactionPluginTestBase):
         )
         self.assertTrue(result)
 
-    def test__probability_0__should_not_react(self):
+    def test__probability_0__should_not_react(self) -> None:
         reaction_plugin = self.create_reaction_plugin(reaction_probability=0)
         message_with_trigger = self._make_message(
             reaction_plugin.reaction_rule.triggers[0]
@@ -60,7 +60,7 @@ class TestReactionBotPluginShouldReact(ReactionPluginTestBase):
         )
         self.assertFalse(result)
 
-    def test__probability_1__should_react(self):
+    def test__probability_1__should_react(self) -> None:
         reaction_plugin = self.create_reaction_plugin(reaction_probability=1)
         message_with_trigger = self._make_message(
             reaction_plugin.reaction_rule.triggers[0]
@@ -71,7 +71,7 @@ class TestReactionBotPluginShouldReact(ReactionPluginTestBase):
         )
         self.assertTrue(result)
 
-    def test__upper_case_trigger_lower_case_content__should_not_react(self):
+    def test__upper_case_trigger_lower_case_content__should_not_react(self) -> None:
         upper_case_trigger = "TRIGGER"
         triggers = (upper_case_trigger,)
         lower_case_message_content = self._make_message(upper_case_trigger.lower())
@@ -82,7 +82,7 @@ class TestReactionBotPluginShouldReact(ReactionPluginTestBase):
         )
         self.assertFalse(result)
 
-    def test__partial_trigger_not_matched__should_not_react(self):
+    def test__partial_trigger_not_matched__should_not_react(self) -> None:
         triggers = ("trigger",)
         partial_trigger = "trigger!"
         message_content_with_partial_trigger = self._make_message(partial_trigger)
@@ -93,7 +93,7 @@ class TestReactionBotPluginShouldReact(ReactionPluginTestBase):
         )
         self.assertFalse(result)
 
-    def test__multiply_words_content_with_trigger__should_react(self):
+    def test__multiply_words_content_with_trigger__should_react(self) -> None:
         triggers = ("trigger",)
         content = "not_trigger trigger"
         message_with_trigger = self._make_message(content)

@@ -7,11 +7,11 @@ from twitch_bot.plugins.log_start_bot_plugin import LogStartBotPlugin
 
 class TestLogStartBotPluginOnReady(unittest.IsolatedAsyncioTestCase):
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.plugin = LogStartBotPlugin()
         self.bot = MagicMock()
 
-    async def test__logs__bot_nick_in_logs(self):
+    async def test__logs__bot_nick_in_logs(self) -> None:
         self.bot.nick = "TestBot"
 
         with self.assertLogs(
@@ -22,7 +22,7 @@ class TestLogStartBotPluginOnReady(unittest.IsolatedAsyncioTestCase):
         logs = cm.output
         self.assertTrue(any("Logged in as TestBot" in message for message in logs))
 
-    async def test__logs__connected_channels_in_logs(self):
+    async def test__logs__connected_channels_in_logs(self) -> None:
         self.channel_1 = SimpleNamespace(name="channel_one")
         self.channel_2 = SimpleNamespace(name="channel_two")
         self.bot.connected_channels = [self.channel_1, self.channel_2]

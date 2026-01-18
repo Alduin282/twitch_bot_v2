@@ -13,7 +13,7 @@ class TestReactionBotPluginReactWithDelay(unittest.IsolatedAsyncioTestCase):
     )
     async def test__react_with_delay__sleeps_and_sends_reply(
         self, mock_sleep_in_range: AsyncMock, mock_random_choice: AsyncMock
-    ):
+    ) -> None:
         chosen_reply = "chosen_reply"
         replies = ("chosen_reply", "reply")
         mock_random_choice.return_value = chosen_reply
