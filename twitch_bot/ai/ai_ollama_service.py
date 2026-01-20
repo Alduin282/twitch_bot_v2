@@ -20,6 +20,10 @@ class AIOllamaService:
         "Всегда отвечай только на русском языке."
         "Не начинай с приветствия"
     )
+    REQUEST_FOR_QUESTION = "Сгенерируй вопрос стримеру в стиле своего персонажа."
+    TIMEOUT_ANSWER = "Не повезло. Попробуй ещё раз, может получится 😅"
+    EXCEPTION_ANSWER = "Что-то пошло не так 😬"
+    NO_CONTENT_ANSWER = "…у меня ступор 🥲"
 
     def __init__(self, model: str = "aya:8b", request_timeout: int = 30) -> None:
         self.model = model
@@ -40,10 +44,7 @@ class AIOllamaService:
     async def ask_streamer(self, context: str = "без контекста") -> str:
         system_prompt = self._build_system_prompt()
 
-        user_prompt = (
-            f"Контекст стрима:\n{context}\n\n"
-            "Сгенерируй вопрос стримеру в стиле своего персонажа."
-        )
+        user_prompt = f"Контекст стрима:\n{context}\n\n" f"{self.REQUEST_FOR_QUESTION}"
 
         response = await self._chat(
             [
@@ -94,17 +95,17 @@ class AIOllamaService:
                 timeout=self.request_timeout,
             )
 
-            return response.get("message", {}).get("content", "…у меня ступор 🥲")
+            return response.get("message", {}).get("content", self.NO_CONTENT_ANSWER)
 
         except asyncio.TimeoutError:
             logger.warning(
                 "[AIOllamaService] Timeout after %s seconds",
                 self.request_timeout,
             )
-            return "Не повезло. Попробуй ещё раз, может получится 😅"
+            return self.TIMEOUT_ANSWER
         except Exception as exc:
             logger.exception(
                 "[AIOllamaService] Unexpected error during ollama.chat: %s",
                 exc,
             )
-            return "Что-то пошло не так 😬"
+            return self.EXCEPTION_ANSWER
