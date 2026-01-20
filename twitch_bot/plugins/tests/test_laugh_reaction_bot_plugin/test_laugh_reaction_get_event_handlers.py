@@ -4,7 +4,7 @@ from twitch_bot.definitions import EventType
 from twitch_bot.plugins.laugh_reaction_bot_plugin import LaughReactionBotPlugin
 
 
-class TestPyramidBotPluginGetEventHandlers(unittest.TestCase):
+class TestLaughReactionBotPluginGetEventHandlers(unittest.TestCase):
 
     def setUp(self) -> None:
         self.plugin: LaughReactionBotPlugin = LaughReactionBotPlugin()
