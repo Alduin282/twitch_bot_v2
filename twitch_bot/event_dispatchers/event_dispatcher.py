@@ -12,6 +12,8 @@ logger = logging.getLogger(__name__)
 
 
 class EventDispatcher(IEventDispatcher):
+    NO_PLUGIN_FOUND = "No plugin found"
+
     def __init__(self, bot_plugins: Sequence[BotPlugin]) -> None:
         self._event_handlers: dict[EventType, list[EVENT_HANDLER]] = {}
 
@@ -57,4 +59,4 @@ class EventDispatcher(IEventDispatcher):
         if inspect.ismethod(event_handler):
             return event_handler.__self__.__class__.__name__
         else:
-            return "No plugin found"
+            return self.NO_PLUGIN_FOUND
