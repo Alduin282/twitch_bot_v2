@@ -22,7 +22,7 @@ class LaughRule:
     window_size_messages: int
     required_matches: int
     cooldown_seconds: int
-    log_file: str
+    log_file_path: str
 
     def __post_init__(self):
         if not self.laugh_markers:
@@ -48,14 +48,14 @@ class LogLaughBurstBotPlugin(BotPlugin):
         window_size_messages: int = 10,
         required_matches: int = 6,
         cooldown_seconds: int = 180,
-        log_file: str = "twitch_burst_log.txt",
+        log_file_path: str = "twitch_burst_log.txt",
     ) -> None:
         self.laugh_rule = LaughRule(
             laugh_markers=laugh_markers,
             window_size_messages=window_size_messages,
             required_matches=required_matches,
             cooldown_seconds=cooldown_seconds,
-            log_file=log_file,
+            log_file_path=log_file_path,
         )
         self._file_lock = asyncio.Lock()
         self._cooldowns: dict[str, Cooldown] = {}
@@ -78,21 +78,20 @@ class LogLaughBurstBotPlugin(BotPlugin):
         channel_state = self.window_messages_state[channel_name]
         channel_state.append(message_text)
 
-        if not self._should_log(message_text, channel_state, cooldown):
+        if not self._should_log(channel_state, cooldown):
             return
 
         await self._log_laugh(channel_name, message.timestamp, bot)
         cooldown.trigger()
 
+    # TODO переиспользовать это везде, если решишь рефакторить
     def _get_channel_cooldown(self, channel_name: str) -> Cooldown:
         return self._cooldowns.setdefault(
             channel_name, Cooldown(self.laugh_rule.cooldown_seconds)
         )
 
-    def _should_log(
-        self, message_text: str, channel_state: deque, cooldown: Cooldown
-    ) -> bool:
-        if not self._is_laugh(message_text):
+    def _should_log(self, channel_state: deque, cooldown: Cooldown) -> bool:
+        if not self._is_laugh(channel_state[0]):
             return False
 
         if not self._has_laugh_burst(channel_state):
@@ -115,6 +114,10 @@ class LogLaughBurstBotPlugin(BotPlugin):
     ) -> None:
         stream_start = await self._get_start_stream_time(bot, channel_name)
         if not stream_start:
+            logger.warning(
+                f"[LogLaughBurstBotPlugin] Stream not found for '{channel_name}', "
+                "skip log"
+            )
             return
 
         message_timestamp_utc = message_timestamp.replace(tzinfo=timezone.utc)
@@ -124,11 +127,8 @@ class LogLaughBurstBotPlugin(BotPlugin):
             f"{channel_name} LAUGH-BURST at {message_timestamp} ({stream_time})\n"
         )
         try:
-            async with self._file_lock:
-                await asyncio.to_thread(self._append_log, log_line)
-                logger.info(
-                    "[LogLaughBurstBotPlugin] laugh burst log successfully added"
-                )
+            await self._write_log_line(log_line)
+            logger.info("[LogLaughBurstBotPlugin] laugh burst log successfully added")
         except Exception as e:
             logger.error(f"[LogLaughBurstBotPlugin] Failed to write laugh log: {e}")
 
@@ -155,6 +155,10 @@ class LogLaughBurstBotPlugin(BotPlugin):
             )
             return None
 
+    async def _write_log_line(self, log_line: str) -> None:
+        async with self._file_lock:
+            await asyncio.to_thread(self._append_log, log_line)
+
     def _append_log(self, log_line: str):
-        with open(self.laugh_rule.log_file, "a", encoding="utf-8") as f:
+        with open(self.laugh_rule.log_file_path, "a", encoding="utf-8") as f:
             f.write(log_line)
