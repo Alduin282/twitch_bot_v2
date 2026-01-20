@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import AsyncMock
 
 from twitch_bot.definitions import EventType
-from twitch_bot.plugins.ai_persona_pluign import AIPersonaPlugin
+from twitch_bot.plugins.ai_persona_plugin import AIPersonaPlugin
 
 
 class TestAIPersonaBotPluginGetEventHandlers(unittest.TestCase):

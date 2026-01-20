@@ -7,9 +7,10 @@ from twitch_bot.twitch_bot import TwitchBot
 
 # TODO персона пер канал?
 class AIPersonaPlugin(BotPlugin):
-    GET_PERSONA_COMMAND = "!persona"
-    RANDOM_PERSONA_COMMAND = "!persona random"
-    RESET_PERSONA_COMMAND = "!persona reset"
+    PREFIX = "!persona"
+    GET_PERSONA_COMMAND = f"{PREFIX}"
+    RANDOM_PERSONA_COMMAND = f"{PREFIX} random"
+    RESET_PERSONA_COMMAND = f"{PREFIX} reset"
 
     def __init__(self, ai_service: AIOllamaService):
         self._ai = ai_service
