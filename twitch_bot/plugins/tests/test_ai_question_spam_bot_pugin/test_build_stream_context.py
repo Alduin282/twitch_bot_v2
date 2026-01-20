@@ -41,12 +41,18 @@ class TestAIQuestionSpamBuildStreamContext(IsolatedAsyncioTestCase):
 
         self.assertIn(self.plugin.NO_TAGS, result)
 
-    def test__stream_without_title_and_game__default_fields_in_result(self) -> None:
-        stream = self._get_stream_mock(title=None, game_name=None)
+    def test__stream_without_title__default_field_in_result(self) -> None:
+        stream = self._get_stream_mock(title=None)
 
         result = self.plugin._build_stream_context(stream)
 
         self.assertIn(self.plugin.NO_TITLE, result)
+
+    def test__stream_without_game__default_field_in_result(self) -> None:
+        stream = self._get_stream_mock(game_name=None)
+
+        result = self.plugin._build_stream_context(stream)
+
         self.assertIn(self.plugin.NO_GAME_NAME, result)
 
     @staticmethod

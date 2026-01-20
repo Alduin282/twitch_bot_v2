@@ -9,21 +9,19 @@ from twitch_bot.plugins.helpers import DurationRange
 class TestAIQuestionSpamOnReady(IsolatedAsyncioTestCase):
     def setUp(self) -> None:
         self.default_question = "test_question"
+        self.ai_service = self._get_ai_service_mock(self.default_question)
+        self.plugin = self._create_ai_question_plugin(self.ai_service)
 
     async def test__no_channels__logs_and_returns(self) -> None:
-        ai_service = self._get_ai_service_mock(self.default_question)
-        plugin = self._create_ai_question_plugin(ai_service)
         bot = self._get_bot_mock(connected_channels=[])
 
         with self.assertLogs(
             "twitch_bot.plugins.ai_question_spam_bot_plugin",
             level="WARNING",
         ):
-            await plugin._on_ready(bot)
+            await self.plugin._on_ready(bot)
 
     async def test__single_channel__sends_question(self) -> None:
-        ai_service = self._get_ai_service_mock(self.default_question)
-        plugin = self._create_ai_question_plugin(ai_service)
         channel = self._get_channel_mock("test_channel")
         bot = self._get_bot_mock(connected_channels=[channel])
 
@@ -38,14 +36,12 @@ class TestAIQuestionSpamOnReady(IsolatedAsyncioTestCase):
             ]
 
             with self.assertRaises(asyncio.CancelledError):
-                await plugin._on_ready(bot)
+                await self.plugin._on_ready(bot)
 
         channel.send.assert_awaited_once_with(self.default_question)
-        ai_service.ask_streamer.assert_awaited_once()
+        self.ai_service.ask_streamer.assert_awaited_once()
 
     async def test__multiple_channels__sends_questions_to_all_channels(self) -> None:
-        ai_service = self._get_ai_service_mock(self.default_question)
-        plugin = self._create_ai_question_plugin(ai_service)
         channel1 = self._get_channel_mock("test_channel1")
         channel2 = self._get_channel_mock("test_channel2")
         bot = self._get_bot_mock(connected_channels=[channel1, channel2])
@@ -61,7 +57,7 @@ class TestAIQuestionSpamOnReady(IsolatedAsyncioTestCase):
             ]
 
             with self.assertRaises(asyncio.CancelledError):
-                await plugin._on_ready(bot)
+                await self.plugin._on_ready(bot)
 
         channel1.send.assert_awaited_once_with(self.default_question)
         channel2.send.assert_awaited_once_with(self.default_question)
