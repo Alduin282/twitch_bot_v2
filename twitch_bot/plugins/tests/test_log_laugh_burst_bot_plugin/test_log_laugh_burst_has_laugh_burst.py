@@ -1,41 +1,36 @@
-import unittest
 from collections import deque
 
-from twitch_bot.plugins.log_laugh_burst_bot_plugin import LogLaughBurstBotPlugin
-
-
-class LogLaughBurstBotPluginTestBase(unittest.TestCase):
-    def create_reaction_rule(
-        self,
-        laugh_markers=("laugh_marker",),
-        window_size_messages=10,
-        required_matches=5,
-        cooldown_seconds=15,
-        log_file_path="log.txt",
-    ) -> LogLaughBurstBotPlugin:
-        return LogLaughBurstBotPlugin(
-            laugh_markers=laugh_markers,
-            window_size_messages=window_size_messages,
-            required_matches=required_matches,
-            cooldown_seconds=cooldown_seconds,
-            log_file_path=log_file_path,
-        )
+from twitch_bot.plugins.tests.test_log_laugh_burst_bot_plugin.test_log_laugh_burst_base import (  # noqa: E501
+    LogLaughBurstBotPluginTestBase,
+)
 
 
 class TestLogLaughBurstBotPluginHasLaughBurst(LogLaughBurstBotPluginTestBase):
 
-    def test__enough_laugh_messages__true(self) -> None:
+    def test__enough_laugh_messages__return_true(self) -> None:
+        laugh_markers = ("laugh_marker",)
+        plugin = self.create_reaction_rule(
+            laugh_markers=laugh_markers, window_size_messages=3, required_matches=2
+        )
         messages = deque(
-            ["lol", "hello", "lol", "lol", "test"],
-            maxlen=5,
+            ["laugh_marker_and_something", "not_marker", "laugh_marker"],
+            maxlen=plugin.laugh_rule.window_size_messages,
         )
 
-        self.assertTrue(plugin._has_laugh_burst(messages))
+        result = plugin._has_laugh_burst(messages)
 
-    def test__not_enough_laugh_messages__false(self) -> None:
+        self.assertTrue(result)
+
+    def test__not_enough_laugh_messages__return_false(self) -> None:
+        laugh_markers = ("laugh_marker",)
+        plugin = self.create_reaction_rule(
+            laugh_markers=laugh_markers, window_size_messages=3, required_matches=2
+        )
         messages = deque(
-            ["lol", "hello", "test", "world"],
-            maxlen=5,
+            ["not_marker", "not_marker", "laugh_marker"],
+            maxlen=plugin.laugh_rule.window_size_messages,
         )
 
-        self.assertFalse(self.plugin._has_laugh_burst(messages))
+        result = plugin._has_laugh_burst(messages)
+
+        self.assertFalse(result)
