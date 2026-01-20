@@ -9,7 +9,7 @@ class TestPeriodicSpamBotPluginGetEventHandlers(unittest.TestCase):
 
     def setUp(self):
         self.plugin = PeriodicSpamBotPlugin(
-            messages=["hello"],
+            messages=["test_message"],
             interval=DurationRange(1.0, 2.0),
         )
 

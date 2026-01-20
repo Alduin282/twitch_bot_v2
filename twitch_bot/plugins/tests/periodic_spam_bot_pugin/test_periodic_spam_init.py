@@ -20,7 +20,7 @@ class TestPeriodicSpamBotPluginInit(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             PeriodicSpamBotPlugin(
-                messages=["hello"],
+                messages=["test_message"],
                 interval=DurationRange(1.0, 2.0),
                 delay_start_seconds=below_zero_delay,
             )

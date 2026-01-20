@@ -11,7 +11,7 @@ class TestPeriodicSpamBotPluginOnReady(unittest.IsolatedAsyncioTestCase):
     async def test__delay_configured__sleeps_before_start(self):
         delay_before_start = 3.0
         plugin = PeriodicSpamBotPlugin(
-            messages=["hello"],
+            messages=["test_message"],
             interval=DurationRange(1.0, 2.0),
             delay_start_seconds=delay_before_start,
         )
@@ -26,7 +26,7 @@ class TestPeriodicSpamBotPluginOnReady(unittest.IsolatedAsyncioTestCase):
 
     async def test__no_connected_channels__logs_warning_and_returns(self):
         plugin = PeriodicSpamBotPlugin(
-            messages=["hello"],
+            messages=["test_message"],
             interval=DurationRange(1.0, 2.0),
         )
 
@@ -47,7 +47,7 @@ class TestPeriodicSpamBotPluginOnReady(unittest.IsolatedAsyncioTestCase):
             )
 
     async def test__multiple_channels__sends_message_to_all_channels(self):
-        message_to_send = "hello"
+        message_to_send = "message_to_send"
         plugin = PeriodicSpamBotPlugin(
             messages=[message_to_send],
             interval=DurationRange(1.0, 2.0),
@@ -75,7 +75,7 @@ class TestPeriodicSpamBotPluginOnReady(unittest.IsolatedAsyncioTestCase):
             channel_2.send.assert_awaited_once_with(message_to_send)
 
     async def test__single_channel__sends_two_messages_in_two_iterations(self):
-        message_to_send = "hello"
+        message_to_send = "message_to_send"
         plugin = PeriodicSpamBotPlugin(
             messages=[message_to_send],
             interval=DurationRange(1.0, 2.0),
@@ -104,7 +104,8 @@ class TestPeriodicSpamBotPluginOnReady(unittest.IsolatedAsyncioTestCase):
         channel.send.assert_any_await(message_to_send)
 
     async def test__multiple_messages__random_one_sended(self) -> None:
-        multiple_messages = ["hello", "world"]
+        random_message = "random_test_message"
+        multiple_messages = ["test_message", random_message]
         plugin = PeriodicSpamBotPlugin(
             messages=multiple_messages,
             interval=DurationRange(1.0, 2.0),
@@ -120,7 +121,7 @@ class TestPeriodicSpamBotPluginOnReady(unittest.IsolatedAsyncioTestCase):
             new_callable=AsyncMock,
         ) as sleep_mock, patch(
             "twitch_bot.plugins.periodic_spam_bot_plugin.random.choice",
-            return_value="world",
+            return_value=random_message,
         ) as random_choice_mock:
             sleep_mock.side_effect = [
                 None,  # 1-я итерация
@@ -131,4 +132,4 @@ class TestPeriodicSpamBotPluginOnReady(unittest.IsolatedAsyncioTestCase):
                 await plugin._on_ready(bot)
 
         random_choice_mock.assert_called_once_with(multiple_messages)
-        channel.send.assert_any_await("world")
+        channel.send.assert_any_await(random_message)
