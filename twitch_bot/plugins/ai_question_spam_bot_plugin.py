@@ -13,6 +13,10 @@ logger = logging.getLogger(__name__)
 
 
 class AIQuestionSpamPlugin(BotPlugin):
+    NO_TAGS = "нет тегов"
+    NO_TITLE = "Стрим без названия"
+    NO_GAME_NAME = "Игра не указана"
+
     def __init__(
         self,
         ai_service: AIOllamaService,
@@ -59,13 +63,13 @@ class AIQuestionSpamPlugin(BotPlugin):
         if not stream:
             return ""
 
-        title = stream.title or "Стрим без названия"
-        game = stream.game_name or "Игра не указана"
+        title = stream.title or self.NO_TITLE
+        game = stream.game_name or self.NO_GAME_NAME
 
         if stream.tags:
             tags = ", ".join(stream.tags)
         else:
-            tags = "нет тегов"
+            tags = self.NO_TAGS
 
         context = f"Заголовок стрима: {title}. " f"Теги: {tags}. " f"Игра: {game}."
 
