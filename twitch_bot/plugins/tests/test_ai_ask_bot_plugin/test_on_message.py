@@ -24,7 +24,9 @@ class TestAIAskPluginOnMessage(unittest.IsolatedAsyncioTestCase):
         ai_service = self._get_ai_service_mock()
         plugin = AIAskPlugin(ai_service=ai_service)
         channel = self._get_channel_mock("test_channel")
-        message_with_ask = self._get_message_mock("!ask something", channel)
+        message_with_ask = self._get_message_mock(
+            f"{plugin.COMMAND} something", channel
+        )
 
         cooldown = self._get_cooldown_mock(is_ready=False)
         plugin._cooldowns["test_channel"] = cooldown
@@ -39,7 +41,9 @@ class TestAIAskPluginOnMessage(unittest.IsolatedAsyncioTestCase):
         plugin = AIAskPlugin(ai_service=ai_service)
 
         channel = self._get_channel_mock("test_channel")
-        ask_without_question_message = self._get_message_mock("!ask ", channel)
+        ask_without_question_message = self._get_message_mock(
+            f"{plugin.COMMAND} ", channel
+        )
 
         await plugin._on_message(MagicMock(), ask_without_question_message)
 
@@ -53,7 +57,7 @@ class TestAIAskPluginOnMessage(unittest.IsolatedAsyncioTestCase):
 
         channel = self._get_channel_mock("test_channel")
         user_question = "some question?"
-        message = self._get_message_mock(f"!ask {user_question}", channel)
+        message = self._get_message_mock(f"{plugin.COMMAND} {user_question}", channel)
 
         await plugin._on_message(MagicMock(), message)
 
@@ -66,7 +70,7 @@ class TestAIAskPluginOnMessage(unittest.IsolatedAsyncioTestCase):
         plugin = AIAskPlugin(ai_service=ai_service)
 
         channel = self._get_channel_mock("test_channel")
-        message = self._get_message_mock("!ask some question?", channel)
+        message = self._get_message_mock(f"{plugin.COMMAND} some question?", channel)
 
         await plugin._on_message(MagicMock(), message)
 

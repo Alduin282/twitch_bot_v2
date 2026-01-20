@@ -8,6 +8,7 @@ from twitch_bot.twitch_bot import TwitchBot
 
 class AIAskPlugin(BotPlugin):
     NO_QUESTION_ANSWER = "Нужно указать вопрос 😊 Пример: !ask как дела?"
+    COMMAND = "!ask"
 
     def __init__(self, ai_service: AIOllamaService, cooldown_seconds: int = 30) -> None:
         self._ai = ai_service
@@ -21,7 +22,7 @@ class AIAskPlugin(BotPlugin):
 
     async def _on_message(self, bot: TwitchBot, message: Message) -> None:
         content = (message.content or "").strip()
-        if not content.startswith("!ask"):
+        if not content.startswith(self.COMMAND):
             return
 
         channel = message.channel
