@@ -30,9 +30,11 @@ class TestLogLaughBurstBotPluginShouldLog(LogLaughBurstBotPluginTestBase):
             laugh_markers=(self.laugh_marker,),
             required_matches=2,
         )
-        messages = deque(["not_laugh_message", self.laugh_marker], maxlen=5)
+        window_messages_state = deque(
+            ["not_laugh_message", self.laugh_marker], maxlen=5
+        )
 
-        result = self.plugin._should_log(messages, self.cooldown)
+        result = self.plugin._should_log(window_messages_state, self.cooldown)
 
         self.assertFalse(result)
 
@@ -42,8 +44,8 @@ class TestLogLaughBurstBotPluginShouldLog(LogLaughBurstBotPluginTestBase):
             required_matches=2,
         )
         self.cooldown.is_ready.return_value = False
-        messages = deque([self.laugh_marker, self.laugh_marker], maxlen=5)
+        window_messages_state = deque([self.laugh_marker, self.laugh_marker], maxlen=5)
 
-        result = self.plugin._should_log(messages, self.cooldown)
+        result = self.plugin._should_log(window_messages_state, self.cooldown)
 
         self.assertFalse(result)

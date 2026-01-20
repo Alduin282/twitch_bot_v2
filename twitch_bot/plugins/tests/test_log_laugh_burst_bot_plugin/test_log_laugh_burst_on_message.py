@@ -21,7 +21,7 @@ class TestLogLaughBurstBotPluginOnMessage(
             required_matches=2,
         )
 
-        message = self._get_message_mock(laugh_marker, "test_channel")
+        message_with_laugh = self._get_message_mock(laugh_marker, "test_channel")
 
         bot = MagicMock()
 
@@ -31,8 +31,9 @@ class TestLogLaughBurstBotPluginOnMessage(
             cooldown = self._get_cooldown_mock(is_ready=True)
             cooldown_mock.return_value = cooldown
 
-            await plugin._on_message(bot, message)
-            await plugin._on_message(bot, message)
+            # laugh burst
+            await plugin._on_message(bot, message_with_laugh)
+            await plugin._on_message(bot, message_with_laugh)
 
             log_mock.assert_awaited_once()
             cooldown.trigger.assert_called_once()
@@ -46,7 +47,7 @@ class TestLogLaughBurstBotPluginOnMessage(
             required_matches=2,
         )
 
-        message = self._get_message_mock(
+        message_without_laugh = self._get_message_mock(
             content="content_without_laugh", channel="test_channel"
         )
 
@@ -58,10 +59,10 @@ class TestLogLaughBurstBotPluginOnMessage(
             cooldown = self._get_cooldown_mock(is_ready=True)
             cooldown_mock.return_value = cooldown
 
-            # 3 messages without burst
-            await plugin._on_message(bot, message)
-            await plugin._on_message(bot, message)
-            await plugin._on_message(bot, message)
+            # 3 messages, no burst
+            await plugin._on_message(bot, message_without_laugh)
+            await plugin._on_message(bot, message_without_laugh)
+            await plugin._on_message(bot, message_without_laugh)
 
             log_mock.assert_not_awaited()
             cooldown.trigger.assert_not_called()
@@ -74,7 +75,7 @@ class TestLogLaughBurstBotPluginOnMessage(
             required_matches=2,
         )
 
-        message = self._get_message_mock(laugh_marker, "test_channel")
+        message_with_laugh = self._get_message_mock(laugh_marker, "test_channel")
 
         bot = MagicMock()
 
@@ -84,9 +85,9 @@ class TestLogLaughBurstBotPluginOnMessage(
             cooldown = self._get_cooldown_mock(is_ready=False)
             cooldown_mock.return_value = cooldown
 
-            # два сообщения → burst есть
-            await plugin._on_message(bot, message)
-            await plugin._on_message(bot, message)
+            # laugh burst
+            await plugin._on_message(bot, message_with_laugh)
+            await plugin._on_message(bot, message_with_laugh)
 
             log_mock.assert_not_awaited()
             cooldown.trigger.assert_not_called()

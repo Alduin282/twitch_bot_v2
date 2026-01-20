@@ -11,7 +11,7 @@ class TestLogLaughBurstBotPluginGetStartStreamTime(unittest.IsolatedAsyncioTestC
         plugin = LogLaughBurstBotPlugin()
 
         stream = MagicMock()
-        stream.started_at = datetime.utcnow()
+        stream.started_at = datetime.now()
 
         bot = MagicMock()
         bot.fetch_streams = AsyncMock(return_value=[stream])
