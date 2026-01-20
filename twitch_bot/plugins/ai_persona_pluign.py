@@ -5,6 +5,7 @@ from twitchio import Message
 from twitch_bot.twitch_bot import TwitchBot
 
 
+# TODO персона пер канал?
 class AIPersonaPlugin(BotPlugin):
     def __init__(self, ai_service: AIOllamaService):
         self._ai = ai_service

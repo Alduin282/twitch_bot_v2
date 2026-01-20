@@ -19,10 +19,12 @@ class PeriodicSpamBotPlugin(BotPlugin):
         delay_start_seconds: float = 0.0,
     ) -> None:
         if not messages:
-            raise ValueError("messages cannot be empty")
+            raise ValueError("[PeriodicSpamBotPlugin]: messages cannot be empty")
 
         if delay_start_seconds < 0:
-            raise ValueError("delay_start_seconds must be >= 0")
+            raise ValueError(
+                "[PeriodicSpamBotPlugin]: delay_start_seconds must be >= 0"
+            )
 
         self._messages = messages
         self._interval = interval
