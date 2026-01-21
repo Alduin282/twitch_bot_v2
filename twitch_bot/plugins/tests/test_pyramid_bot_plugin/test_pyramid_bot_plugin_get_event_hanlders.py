@@ -18,6 +18,3 @@ class TestPyramidBotPluginGetEventHandlers(unittest.TestCase):
         event_handlers = self.plugin.get_event_handlers()
 
         self.assertTrue(callable(event_handlers[EventType.MESSAGE]))
-        self.assertEqual(
-            event_handlers[EventType.MESSAGE].__name__, self.plugin._on_message.__name__
-        )

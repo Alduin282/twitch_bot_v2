@@ -5,10 +5,12 @@ from dotenv import load_dotenv
 from twitch_bot.ai.ai_ollama_service import AIOllamaService
 from twitch_bot.event_dispatchers.event_dispatcher import EventDispatcher
 from twitch_bot.plugins.ai_ask_bot_plugin import AIAskPlugin
-from twitch_bot.plugins.ai_persona_pluign import AIPersonaPlugin
+from twitch_bot.plugins.ai_persona_plugin import AIPersonaPlugin
 from twitch_bot.plugins.ai_question_spam_bot_plugin import AIQuestionSpamPlugin
+from twitch_bot.plugins.console_chat_bot_plugin import ConsoleChatBotPlugin
 from twitch_bot.plugins.helpers import DurationRange
 from twitch_bot.plugins.log_start_bot_plugin import LogStartBotPlugin
+from twitch_bot.plugins.periodic_spam_bot_plugin import PeriodicSpamBotPlugin
 from twitch_bot.twitch_bot import TwitchBot
 
 load_dotenv()
@@ -30,12 +32,8 @@ ai_service = AIOllamaService(model="phi3")
 
 plugins = [
     LogStartBotPlugin(),
-    AIQuestionSpamPlugin(
-        ai_service=ai_service,
-        interval=DurationRange(min_seconds=60, max_seconds=60),
-    ),
-    AIPersonaPlugin(ai_service=ai_service),
-    AIAskPlugin(ai_service=ai_service),
+    ConsoleChatBotPlugin(target_channels=["2", "3"]),
+    PeriodicSpamBotPlugin(messages=["PERIOD"], interval=DurationRange(5, 5)),
 ]
 
 event_dispatcher = EventDispatcher(plugins)
@@ -44,7 +42,7 @@ event_dispatcher = EventDispatcher(plugins)
 # работают на всех каналах
 bot = TwitchBot(
     token=TWITCH_TOKEN_AOTH,
-    channels_to_connect=["alduin3115"],
+    channels_to_connect=["alduin3115", "pudgeforever4"],
     twitch_secret_key=TWITCH_SECRET_KEY,
     event_dispatcher=event_dispatcher,
 )

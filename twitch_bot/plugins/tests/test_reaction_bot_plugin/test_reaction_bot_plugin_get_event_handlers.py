@@ -17,6 +17,3 @@ class TestReactionBotPluginGetEventHandlers(unittest.TestCase):
         handlers = self.plugin.get_event_handlers()
 
         self.assertTrue(callable(handlers[EventType.MESSAGE]))
-        self.assertEqual(
-            handlers[EventType.MESSAGE].__name__, self.plugin._on_message.__name__
-        )

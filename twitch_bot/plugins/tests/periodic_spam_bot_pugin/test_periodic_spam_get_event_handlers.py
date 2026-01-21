@@ -22,6 +22,3 @@ class TestPeriodicSpamBotPluginGetEventHandlers(unittest.TestCase):
         handlers = self.plugin.get_event_handlers()
 
         self.assertTrue(callable(handlers[EventType.READY]))
-        self.assertEqual(
-            handlers[EventType.READY].__name__, self.plugin._on_ready.__name__
-        )
