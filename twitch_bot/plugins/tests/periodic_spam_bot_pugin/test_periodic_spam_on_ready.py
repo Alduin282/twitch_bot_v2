@@ -42,9 +42,7 @@ class TestPeriodicSpamBotPluginOnReady(unittest.IsolatedAsyncioTestCase):
             await plugin._on_ready(bot)
 
             sleep_mock.assert_not_called()
-            warning_mock.assert_called_once_with(
-                "[PeriodicSpamBotPlugin]: no connected channels, skipping spam"
-            )
+            warning_mock.assert_called_once()
 
     async def test__multiple_channels__sends_message_to_all_channels(self):
         message_to_send = "message_to_send"

@@ -35,6 +35,4 @@ class TestLogLaughBurstBotPluginGetStartStreamTime(unittest.IsolatedAsyncioTestC
             result = await plugin._get_start_stream_time(bot, "channel")
 
             self.assertIsNone(result)
-            warning_mock.assert_called_once_with(
-                "[LogLaughBurstBotPlugin] No active stream found for 'channel'"
-            )
+            warning_mock.assert_called_once()

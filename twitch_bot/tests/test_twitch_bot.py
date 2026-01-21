@@ -24,7 +24,7 @@ class TestPlugin(BotPlugin):
         self.message_called_with.append(message)
 
 
-class TestIntegrationTwitchBot(IsolatedAsyncioTestCase):
+class TestTwitchBot(IsolatedAsyncioTestCase):
 
     async def test__ready_event_dispatches_to_plugin__no_errors(self):
         plugin = TestPlugin()
