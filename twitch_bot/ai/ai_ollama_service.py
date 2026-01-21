@@ -24,6 +24,12 @@ class AIOllamaService:
     TIMEOUT_ANSWER = "Не повезло. Попробуй ещё раз, может получится 😅"
     EXCEPTION_ANSWER = "Что-то пошло не так 😬"
     NO_CONTENT_ANSWER = "…у меня ступор 🥲"
+    OLLAMA_OPTIONS = {
+        "stop": ["\n\n"],
+        "temperature": 0.8,
+        "top_p": 0.9,
+        "repeat_penalty": 1.3,
+    }
 
     def __init__(self, model: str = "aya:8b", request_timeout: int = 30) -> None:
         self.model = model

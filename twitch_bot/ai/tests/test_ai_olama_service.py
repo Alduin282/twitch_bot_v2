@@ -1,7 +1,8 @@
+import ollama
+import asyncio
+
 from unittest import IsolatedAsyncioTestCase
 from unittest.mock import AsyncMock, patch
-
-import asyncio
 
 from twitch_bot.ai.ai_ollama_service import AIOllamaService
 
@@ -64,7 +65,8 @@ class TestAIOllamaService(IsolatedAsyncioTestCase):
 
         persona = ai_service.get_persona()
 
-        self.assertEqual(persona, ai_service.DEFAULT_PERSONA)
+        current_persona = ai_service.DEFAULT_PERSONA
+        self.assertEqual(persona, current_persona)
 
     def test__build_system_prompt__contains_persona_and_base_prompt(self) -> None:
         ai_service = AIOllamaService()
@@ -74,7 +76,7 @@ class TestAIOllamaService(IsolatedAsyncioTestCase):
         self.assertIn(ai_service.persona, prompt)
         self.assertIn(ai_service.BASE_PROMPT, prompt)
 
-    async def test__chat_timeout__returns_fallback_message(self) -> None:
+    async def test__chat_timeout__returns_timeout_message(self) -> None:
         ai_service = AIOllamaService(request_timeout=1)
 
         with patch(
@@ -85,7 +87,7 @@ class TestAIOllamaService(IsolatedAsyncioTestCase):
 
         self.assertEqual(ai_service.TIMEOUT_ANSWER, result)
 
-    async def test__chat_exception__returns_error_message(self) -> None:
+    async def test__chat_exception__returns_exception_message(self) -> None:
         ai_service = AIOllamaService()
 
         with patch(
@@ -122,3 +124,22 @@ class TestAIOllamaService(IsolatedAsyncioTestCase):
             result = await ai_service._chat([])
 
         self.assertEqual(result, ai_service.NO_CONTENT_ANSWER)
+
+    async def test__chat_calls_ollama_with_expected_params(self) -> None:
+        ai_service = AIOllamaService()
+        fake_response_content = "ollama_response"
+        fake_response = {"message": {"content": fake_response_content}}
+        messages = [{"role": "user", "content": "user_request"}]
+
+        with patch("asyncio.to_thread") as to_thread_mock:
+            to_thread_mock.return_value = fake_response
+            result = await ai_service._chat(messages)
+
+        to_thread_mock.assert_called_once_with(
+            ollama.chat,
+            model=ai_service.model,
+            messages=messages,
+            options=ai_service.OLLAMA_OPTIONS,
+        )
+
+        self.assertEqual(result, fake_response_content)
