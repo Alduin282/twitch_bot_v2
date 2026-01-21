@@ -5,7 +5,8 @@ from twitchio import Message
 from twitch_bot.twitch_bot import TwitchBot
 
 
-# TODO персона пер канал?
+# FIXME не корректно работает с несколькими канаалми
+# поменяв персону на одном канале, меняется на всех
 class AIPersonaPlugin(BotPlugin):
     PREFIX = "!persona"
     GET_PERSONA_COMMAND = f"{PREFIX}"

@@ -84,7 +84,6 @@ class LogLaughBurstBotPlugin(BotPlugin):
         await self._log_laugh(channel_name, message.timestamp, bot)
         cooldown.trigger()
 
-    # TODO переиспользовать это везде, если решишь рефакторить
     def _get_channel_cooldown(self, channel_name: str) -> Cooldown:
         return self._cooldowns.setdefault(
             channel_name, Cooldown(self.laugh_rule.cooldown_seconds)
