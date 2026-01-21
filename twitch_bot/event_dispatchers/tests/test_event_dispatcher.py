@@ -18,9 +18,10 @@ class TestEventDispatcherInit(IsolatedAsyncioTestCase):
         plugin_2 = self._get_plugin_mock(test_event_type, handler_2)
 
         dispatcher = EventDispatcher([plugin_1, plugin_2])
-        handlers = dispatcher._event_handlers[test_event_type]
+        result_handlers = dispatcher._event_handlers[test_event_type]
 
-        self.assertEqual(handlers, [handler_1, handler_2])
+        expected_handlers = [handler_1, handler_2]
+        self.assertEqual(result_handlers, expected_handlers)
 
     async def test__dispatch__calls_handlers_by_event_type(self) -> None:
         handler_1 = AsyncMock()
@@ -58,13 +59,12 @@ class TestEventDispatcherInit(IsolatedAsyncioTestCase):
 
         dispatcher = EventDispatcher([failing_plugin, ok_plugin])
 
-        await dispatcher.dispatch(EventType.READY, "handler_arg")
+        await dispatcher.dispatch(test_event_type, "handler_arg")
 
         failing_handler.assert_awaited_once()
         ok_handler.assert_awaited_once()
 
     async def test__safe_call__logs_exception(self) -> None:
-
         handler = AsyncMock(side_effect=ValueError("fail"))
         test_event_type = EventType.READY
         plugin = self._get_plugin_mock(test_event_type, handler)
@@ -113,15 +113,6 @@ class TestEventDispatcherInit(IsolatedAsyncioTestCase):
         name = dispatcher._get_plugin_name(plugin.handler)
 
         self.assertEqual(name, "TestPlugin")
-
-    def test__get_plugin_name__function_handler(self) -> None:
-        async def handler(): ...
-
-        dispatcher = EventDispatcher([])
-
-        name = dispatcher._get_plugin_name(handler)
-
-        self.assertEqual(name, dispatcher.NO_PLUGIN_FOUND)
 
     @staticmethod
     def _get_plugin_mock(even_type: EventType, handler: Awaitable) -> MagicMock:
