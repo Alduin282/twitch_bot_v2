@@ -21,15 +21,15 @@ class ConsoleChatBotPlugin(BotPlugin):
         }
 
     async def _on_ready(self, bot: TwitchBot) -> None:
-        asyncio.create_task(self._console_chat_loop(bot))
+        asyncio.create_task(self._start_console_chat_loop(bot))
 
-    async def _console_chat_loop(self, bot: TwitchBot):
+    async def _start_console_chat_loop(self, bot: TwitchBot):
         channels_to_chat = self._get_channels(bot)
         if not channels_to_chat:
             logger.error(
                 (
-                    "[ConsoleChatBotPlugin]"
-                    " No channels to chat is taken. Plugin is not started"
+                    "[ConsoleChatBotPlugin] "
+                    "No channels to chat is taken. Plugin is not started"
                 )
             )
             return
@@ -62,5 +62,14 @@ class ConsoleChatBotPlugin(BotPlugin):
                 continue
 
             channels.append(channel)
+
+        if not channels:
+            logger.error(
+                (
+                    "[ConsoleChatBotPlugin] "
+                    "None of the target channels were found among connected channels. "
+                    "Plugin is not sending messages anywhere"
+                )
+            )
 
         return channels
