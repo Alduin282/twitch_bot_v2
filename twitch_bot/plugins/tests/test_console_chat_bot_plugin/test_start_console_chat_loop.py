@@ -8,7 +8,7 @@ class TestConsoleChatBotConsoleLoop(IsolatedAsyncioTestCase):
         self.plugin = ConsoleChatBotPlugin()
         self.bot = MagicMock()
 
-    async def test__no_channels__loop_not_started__logs_error(self) -> None:
+    async def test__no_channels__loop_not_started(self) -> None:
         self.plugin._get_channels = MagicMock(return_value=[])
 
         with patch("twitch_bot.plugins.console_chat_bot_plugin.logger") as logger_mock:

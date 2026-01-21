@@ -21,6 +21,8 @@ class ConsoleChatBotPlugin(BotPlugin):
         }
 
     async def _on_ready(self, bot: TwitchBot) -> None:
+        # TODO по идее для управления тасками нужно это пхиать везде где ready event ,
+        # но делаем только тут и при этом управления таской все равно нет
         asyncio.create_task(self._start_console_chat_loop(bot))
 
     async def _start_console_chat_loop(self, bot: TwitchBot):
@@ -62,14 +64,5 @@ class ConsoleChatBotPlugin(BotPlugin):
                 continue
 
             channels.append(channel)
-
-        if not channels:
-            logger.error(
-                (
-                    "[ConsoleChatBotPlugin] "
-                    "None of the target channels were found among connected channels. "
-                    "Plugin is not sending messages anywhere"
-                )
-            )
 
         return channels

@@ -60,7 +60,6 @@ class TestConsoleChatBotGetChannels(IsolatedAsyncioTestCase):
 
         self.assertEqual(result, [])
         self.assertEqual(logger_mock.warning.call_count, 2)
-        logger_mock.error.assert_called_once()
 
     def _get_channel_mock(self, name: str) -> MagicMock:
         channel = MagicMock()
