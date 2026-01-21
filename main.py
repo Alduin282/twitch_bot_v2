@@ -48,7 +48,7 @@ plugins = [
     #     interval=DurationRange(min_seconds=60, max_seconds=600),
     #     delay_start_seconds=60,
     # ),
-    # ConsoleChatBotPlugin(target_channels=["alduin3115"]),
+    # ConsoleChatBotPlugin(target_channels=["sasavot"]),
     # LaughReactionBotPlugin(cooldown_seconds=30),
     # LogLaughBurstBotPlugin(laugh_markers=["hehe"]),
     # PeriodicSpamBotPlugin(messages=["Your message"], interval=DurationRange(60, 60)),
@@ -57,7 +57,7 @@ plugins = [
 ]
 
 # Добавьте каналы на которые бот подключится
-channels_to_connect = ["channel_name"]
+channels_to_connect = ["sasavot"]
 event_dispatcher = EventDispatcher(plugins)
 
 bot = TwitchBot(
