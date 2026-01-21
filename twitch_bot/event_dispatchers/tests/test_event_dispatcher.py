@@ -83,7 +83,7 @@ class TestEventDispatcherInit(IsolatedAsyncioTestCase):
 
         self.assertEqual(extra["event"], test_event_type.value)
 
-    async def test__dispatch__parallel_execution(self) -> None:
+    async def test__dispatch__asyncio_gather_for_parallel_execution(self) -> None:
         handler_1 = AsyncMock()
         handler_2 = AsyncMock()
 
