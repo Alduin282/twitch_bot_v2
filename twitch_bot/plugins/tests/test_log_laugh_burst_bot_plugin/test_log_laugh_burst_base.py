@@ -9,7 +9,7 @@ class LogLaughBurstBotPluginTestBase(unittest.TestCase):
         laugh_markers=("laugh_marker",),
         window_size_messages=10,
         required_matches=5,
-        cooldown_seconds=15,
+        cooldown_seconds=0,
         log_file_path="log.txt",
     ) -> LogLaughBurstBotPlugin:
         return LogLaughBurstBotPlugin(
