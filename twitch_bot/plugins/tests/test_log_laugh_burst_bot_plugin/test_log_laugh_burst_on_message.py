@@ -53,7 +53,7 @@ class TestLogLaughBurstBotPluginOnMessage(
             laugh_markers=("laugh_marker",),
             window_size_messages=3,
             required_matches=2,
-            cooldown_seconds=9999,  # cooldown НЕ готов
+            cooldown_seconds=9999,
         )
 
         message = self._get_message_mock("laugh_marker", "test_channel")

@@ -38,7 +38,7 @@ class TestLogLaughBurstBotPluginShouldLog(LogLaughBurstBotPluginTestBase):
 
         self.assertFalse(result)
 
-    def test__cooldown_not_ready__false(self) -> None:
+    def test__cooldown_not_ready__return_false(self) -> None:
         self.plugin = self.create_reaction_rule(
             laugh_markers=(self.laugh_marker,),
             required_matches=2,

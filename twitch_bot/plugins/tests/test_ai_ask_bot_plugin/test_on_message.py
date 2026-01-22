@@ -22,19 +22,22 @@ class TestAIAskPluginOnMessage(unittest.IsolatedAsyncioTestCase):
 
     async def test__cooldown_not_ready__does_nothing(self) -> None:
         ai_service = self._get_ai_service_mock()
-        plugin = AIAskPlugin(ai_service=ai_service)
-        channel = self._get_channel_mock("test_channel")
-        message_with_ask = self._get_message_mock(
-            f"{plugin.COMMAND} something", channel
+        plugin = AIAskPlugin(
+            ai_service=ai_service,
+            cooldown_seconds=9999,
         )
 
-        cooldown = self._get_cooldown_mock(is_ready=False)
-        plugin._cooldowns["test_channel"] = cooldown
+        channel = self._get_channel_mock("test_channel")
+        message = self._get_message_mock(
+            f"{plugin.COMMAND} something",
+            channel,
+        )
 
-        await plugin._on_message(MagicMock(), message_with_ask)
+        await plugin._on_message(MagicMock(), message)  # тригер кулдаун
+        await plugin._on_message(MagicMock(), message)
 
-        channel.send.assert_not_called()
-        ai_service.answer.assert_not_called()
+        channel.send.assert_awaited_once()
+        ai_service.answer.assert_awaited_once()
 
     async def test__ask_without_question__sends_help_message(self) -> None:
         ai_service = self._get_ai_service_mock()
@@ -89,12 +92,6 @@ class TestAIAskPluginOnMessage(unittest.IsolatedAsyncioTestCase):
         message.content = content
         message.channel = channel
         return message
-
-    @staticmethod
-    def _get_cooldown_mock(is_ready: bool) -> MagicMock:
-        cooldown = MagicMock()
-        cooldown.is_ready.return_value = is_ready
-        return cooldown
 
     @staticmethod
     def _get_ai_service_mock(answer: str = "some ai answer") -> MagicMock:

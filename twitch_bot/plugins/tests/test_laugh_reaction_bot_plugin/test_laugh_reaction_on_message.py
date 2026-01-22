@@ -7,17 +7,19 @@ from twitch_bot.plugins.laugh_reaction_bot_plugin import LaughReactionBotPlugin
 class TestLaughReactionBotPluginOnMessage(unittest.IsolatedAsyncioTestCase):
 
     async def test__cooldown_not_ready__does_nothing(self) -> None:
-        plugin = LaughReactionBotPlugin(cooldown_seconds=10)
-
+        plugin = LaughReactionBotPlugin(cooldown_seconds=9999)
+        laugh_trigger = plugin.LAUGH_TRIGGERS[0]
         channel = self._get_channel_mock("test_channel")
-        message = self._get_message_mock("test_message", channel)
-        cooldown = self._get_cooldown_mock(is_ready=False)
-        plugin._cooldowns[channel.name] = cooldown
+        message = self._get_message_mock(laugh_trigger, channel)
 
-        await plugin._on_message(MagicMock(), message)
+        with patch(
+            "twitch_bot.plugins.laugh_reaction_bot_plugin.asyncio.sleep",
+            new_callable=AsyncMock,
+        ):
+            await plugin._on_message(MagicMock(), message)  # тригер кулдаун
+            await plugin._on_message(MagicMock(), message)
 
-        channel.send.assert_not_called()
-        cooldown.trigger.assert_not_called()
+        channel.send.assert_awaited_once()
 
     async def test__no_laugh_trigger__does_nothing(self) -> None:
         plugin = LaughReactionBotPlugin()
@@ -92,9 +94,3 @@ class TestLaughReactionBotPluginOnMessage(unittest.IsolatedAsyncioTestCase):
         message.content = content
         message.channel = channel
         return message
-
-    @staticmethod
-    def _get_cooldown_mock(is_ready: bool) -> MagicMock:
-        cooldown = MagicMock()
-        cooldown.is_ready.return_value = is_ready
-        return cooldown
