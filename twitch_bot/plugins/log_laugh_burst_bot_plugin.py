@@ -42,6 +42,8 @@ class LaughRule:
 
 
 class LogLaughBurstBotPlugin(BotPlugin):
+    LAUGH_BURST_LOG_PREFIX = "LAUGH-BURST"
+
     def __init__(
         self,
         laugh_markers: Sequence[str] = ("ахаа", "хаха", "lul", "lol", "lo "),
@@ -123,7 +125,8 @@ class LogLaughBurstBotPlugin(BotPlugin):
         stream_time = message_timestamp_utc - stream_start
 
         log_line = (
-            f"{channel_name} LAUGH-BURST at {message_timestamp} ({stream_time})\n"
+            f"{channel_name} {self.LAUGH_BURST_LOG_PREFIX} "
+            f"at {message_timestamp} ({stream_time})\n"
         )
         try:
             await self._write_log_line(log_line)

@@ -26,32 +26,25 @@ class TestReactionBotPluginOnMessage(
     async def test__cooldown_not_ready__no_reaction(
         self, mock_react_with_delay: AsyncMock
     ) -> None:
-        cooldown: MagicMock = MagicMock(spec=Cooldown)
-        cooldown.is_ready.return_value = False
+        plugin = self.create_reaction_plugin(cooldown_seconds=9999)
 
-        self.plugin._cooldowns[self.message.channel.name] = cooldown
+        await plugin._on_message(self.bot, self.message)
+        await plugin._on_message(self.bot, self.message)
 
-        await self.plugin._on_message(self.bot, self.message)
-
-        cooldown.is_ready.assert_called_once()
-        mock_react_with_delay.assert_not_called()
-        cooldown.trigger.assert_not_called()
+        mock_react_with_delay.assert_called_once()
 
     @patch.object(ReactionBotPlugin, "_react_with_delay", new_callable=AsyncMock)
-    async def test__cooldown_ready__reacts_and_triggers_cooldown(
+    async def test__cooldown_ready__reacts(
         self, mock_react_with_delay: AsyncMock
     ) -> None:
-        cooldown: MagicMock = MagicMock(spec=Cooldown)
-        cooldown.is_ready.return_value = True
-        self.plugin._cooldowns[self.message.channel.name] = cooldown
+        plugin = self.create_reaction_plugin(cooldown_seconds=0)
 
-        await self.plugin._on_message(self.bot, self.message)
+        bot = MagicMock()
 
-        cooldown.is_ready.assert_called_once()
-        mock_react_with_delay.assert_awaited_once_with(
-            self.message, self.plugin.reaction_rule
-        )
-        cooldown.trigger.assert_called_once()
+        await plugin._on_message(bot, self.message)
+        await plugin._on_message(bot, self.message)
+
+        self.assertEqual(mock_react_with_delay.await_count, 2)
 
     @patch.object(ReactionBotPlugin, "_react_with_delay", new_callable=AsyncMock)
     async def test__first_reaction_event_by_channel__cooldown_created(

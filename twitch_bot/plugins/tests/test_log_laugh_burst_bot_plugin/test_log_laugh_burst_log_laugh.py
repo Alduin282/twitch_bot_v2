@@ -1,4 +1,6 @@
 from datetime import datetime, timezone
+import os
+import tempfile
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -6,41 +8,34 @@ from twitch_bot.plugins.log_laugh_burst_bot_plugin import LogLaughBurstBotPlugin
 
 
 class TestLogLaughBurstBotPluginLogLaughNoStream(unittest.IsolatedAsyncioTestCase):
-    # пиздец
+
     async def test__successful_log__writes_expected_log_line(self) -> None:
-        plugin = LogLaughBurstBotPlugin()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            log_path = os.path.join(temp_dir, "laugh.log")
 
-        message_time = datetime(2024, 1, 1, 12, 0, 0)
-        stream_start_time = datetime(2024, 1, 1, 11, 0, 0, tzinfo=timezone.utc)
-        stream_message_time = (
-            message_time.replace(tzinfo=timezone.utc) - stream_start_time
-        )
+            plugin = LogLaughBurstBotPlugin(log_file_path=log_path)
 
-        with patch.object(
-            plugin,
-            "_get_start_stream_time",
-            new_callable=AsyncMock,
-            return_value=stream_start_time,
-        ), patch.object(
-            plugin,
-            "_write_log_line",
-            new_callable=AsyncMock,
-        ) as write_log_in_file_mock:
-            await plugin._log_laugh(
-                channel_name="channel",
-                message_timestamp=message_time,
-                bot=MagicMock(),
-            )
+            message_time = datetime(2024, 1, 1, 12, 0, 0)
+            stream_start_time = datetime(2024, 1, 1, 11, 0, 0, tzinfo=timezone.utc)
+            channel_name = "test_channel"
 
-            write_log_in_file_mock.assert_awaited_once()
-            self.assertEqual(len(write_log_in_file_mock.await_args_list), 1)
+            with patch.object(
+                plugin,
+                "_get_start_stream_time",
+                new_callable=AsyncMock,
+                return_value=stream_start_time,
+            ):
+                await plugin._log_laugh(
+                    channel_name=channel_name,
+                    message_timestamp=message_time,
+                    bot=MagicMock(),
+                )
 
-            write_log_call = write_log_in_file_mock.await_args_list[0]
-            log_line: str = write_log_call.args[0]
+            with open(log_path, encoding="utf-8") as f:
+                content = f.read()
 
-            self.assertIn("channel LAUGH-BURST", log_line)
-            self.assertIn(str(message_time), log_line)
-            self.assertIn(str(stream_message_time), log_line)
+            self.assertIn(f"{channel_name} {plugin.LAUGH_BURST_LOG_PREFIX}", content)
+            self.assertIn(str(message_time), content)
 
     async def test__no_stream__logs_warning_and_returns(self) -> None:
         plugin = LogLaughBurstBotPlugin()

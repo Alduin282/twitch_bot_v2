@@ -1,5 +1,4 @@
 import unittest
-from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 from twitch_bot.plugins.log_start_bot_plugin import LogStartBotPlugin
@@ -23,8 +22,8 @@ class TestLogStartBotPluginOnReady(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(any("Logged in as TestBot" in message for message in logs))
 
     async def test__logs__connected_channels_in_logs(self) -> None:
-        self.channel_1 = SimpleNamespace(name="channel_one")
-        self.channel_2 = SimpleNamespace(name="channel_two")
+        self.channel_1 = MagicMock(name="channel_one")
+        self.channel_2 = MagicMock(name="channel_two")
         self.bot.connected_channels = [self.channel_1, self.channel_2]
 
         with self.assertLogs(
