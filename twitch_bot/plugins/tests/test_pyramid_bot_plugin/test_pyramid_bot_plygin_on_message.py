@@ -57,3 +57,43 @@ class TestPyramidBotPluginOnMessage(unittest.IsolatedAsyncioTestCase):
 
         for actual, expected in zip(actual_calls, expected_calls):
             self.assertEqual(actual.args, expected)
+
+    async def test__valid_command_with_smile__sends_pyramid_with_smile(self) -> None:
+        smile = "smile"
+        valid_command = f"{self.command} 2 {smile}"
+        self.message.content = valid_command
+
+        await self.plugin._on_message(self.bot, self.message)
+
+        expected_calls = [
+            (f"{smile}",),
+            (f"{smile} {smile}",),
+            (f"{smile}",),
+        ]
+
+        actual_calls = self.message.channel.send.await_args_list
+
+        self.assertEqual(len(actual_calls), len(expected_calls))
+
+        for actual, expected in zip(actual_calls, expected_calls):
+            self.assertEqual(actual.args, expected)
+
+    async def test__valid_command_with_extra_args__ignores_extra_args(self) -> None:
+        smile = "smile"
+        valid_command = f"{self.command} 2 {smile} extra_arg"
+        self.message.content = valid_command
+
+        await self.plugin._on_message(self.bot, self.message)
+
+        expected_calls = [
+            (f"{smile}",),
+            (f"{smile} {smile}",),
+            (f"{smile}",),
+        ]
+
+        actual_calls = self.message.channel.send.await_args_list
+
+        self.assertEqual(len(actual_calls), len(expected_calls))
+
+        for actual, expected in zip(actual_calls, expected_calls):
+            self.assertEqual(actual.args, expected)

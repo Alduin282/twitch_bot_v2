@@ -31,6 +31,19 @@ class TestPyramidBotPluginBuildPyramid(unittest.TestCase):
             ],
         )
 
+    def test__build_pyramid_with_custom_smile__pyramid_correct(self) -> None:
+        smile = "smile"
+        pyramid = self.plugin._build_pyramid(2, smile)
+
+        self.assertEqual(
+            pyramid,
+            [
+                smile,
+                f"{smile} {smile}",
+                smile,
+            ],
+        )
+
     def test__build_pyramid_length_for_all_valid_heights__pyramid_length_correct(
         self,
     ) -> None:

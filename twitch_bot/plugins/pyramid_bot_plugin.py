@@ -25,6 +25,8 @@ class PyramidBotPlugin(BotPlugin):
             return
 
         channel = message.channel
+        parts = text_of_command.split()
+        smile = parts[2] if len(parts) >= 3 else self.DEFAULT_PYRAMID_SMILE
 
         ok, problem_message = self._validate_pyramid_command(text_of_command)
         if not ok:
@@ -32,7 +34,7 @@ class PyramidBotPlugin(BotPlugin):
             return
 
         pyramid_height = self._get_pyramid_height(text_of_command)
-        for pyramid_line in self._build_pyramid(pyramid_height):
+        for pyramid_line in self._build_pyramid(pyramid_height, smile):
             await channel.send(pyramid_line)
 
     def _validate_pyramid_command(self, text_of_command: str) -> tuple[bool, str]:
@@ -54,12 +56,15 @@ class PyramidBotPlugin(BotPlugin):
 
         return True, ""
 
-    def _build_pyramid(self, pyramid_height: int) -> list[str]:
+    def _build_pyramid(
+        self, pyramid_height: int, smile: str | None = None
+    ) -> list[str]:
         pyramid = []
+        smile = smile or self.DEFAULT_PYRAMID_SMILE
 
         for i in range(1, pyramid_height * 2):
             current_level = i if i <= pyramid_height else pyramid_height * 2 - i
-            pyramid.append((f"{self.DEFAULT_PYRAMID_SMILE} " * current_level).strip())
+            pyramid.append((f"{smile} " * current_level).strip())
 
         return pyramid
 
